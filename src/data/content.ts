@@ -28,88 +28,76 @@ export const RATING = {
 /* ------------------------------------------------------------------ Home -- */
 
 export const HERO = {
-  eyebrow: 'EclipseCore Honeycomb Blackout Blinds',
-  title: ['Total darkness.', 'Whenever you need it.'],
-  body: 'Made-to-measure honeycomb blinds that press-fit inside your window frame. No drilling, no light leaking around the edges — just deep, uninterrupted sleep.',
+  title: 'Total darkness, whenever you need it',
+  body: 'Made-to-measure honeycomb blackout blinds that press-fit inside your window frame. No drilling, no gaps at the edges and no early-morning light.',
   points: ['Free fabric samples', 'Fit Guarantee', '5-year warranty'],
 };
 
-export const TRUST_POINTS: { icon: IconName; label: string }[] = [
-  { icon: 'moon', label: '100% blackout' },
-  { icon: 'tool', label: 'Drill-free install' },
-  { icon: 'ruler', label: 'Made to measure' },
-  { icon: 'thermo', label: 'Thermal insulating' },
-  { icon: 'shield', label: 'Fit Guarantee' },
-  { icon: 'badge', label: '5-year warranty' },
-  { icon: 'swatch', label: 'Free fabric samples' },
-  { icon: 'child', label: 'Cordless & child-safe' },
-  { icon: 'pin', label: 'Designed in Texas' },
+export const VALUE_PROPS: { icon: IconName; title: string; body: string }[] = [
+  { icon: 'moon', title: '100% blackout', body: 'Sealed frame, no light gaps' },
+  { icon: 'tool', title: 'Drill-free fitting', body: 'Press-fits in minutes' },
+  { icon: 'ruler', title: 'Made to measure', body: 'To the nearest 1/8 inch' },
+  { icon: 'badge', title: '5-year warranty', body: 'Plus our Fit Guarantee' },
 ];
 
 export const PROBLEM = {
-  eyebrow: 'Why you’re waking up tired',
-  title: 'Ordinary blinds and curtains let light in.',
-  body: 'Streetlights, headlights and 5 a.m. sunrises slip around the edges of ordinary blinds and straight through curtains. Even a sliver of light is enough to pull you out of deep sleep — so you wake up groggy, irritable and tired before the day has started.',
-  stat: { value: '90%', label: 'of adults say outdoor light disrupts their sleep' },
-  before: { image: '/img/eclipse/eclipseCore-yourblinds.webp', label: 'Blackout curtains', caption: 'Light glows through the fabric and floods in around every edge.' },
-  after: { image: '/img/eclipse/eclipseCore-ourblinds.webp', label: 'EclipseCore', caption: 'A sealed frame and blackout fabric. Nothing gets through.' },
+  title: 'Most blinds and curtains still let light in',
+  body: 'Streetlights, headlights and early sunrises slip around the edges of ordinary blinds and through curtain fabric. Even a thin line of light can disturb deep sleep, so you wake earlier and feel less rested.',
+  points: [
+    { title: 'Gaps at the edges', body: 'Most blinds leave a gap on every side, so light spills around them.' },
+    { title: 'Fabric that glows', body: 'Many blackout curtains still let light show through the weave.' },
+    { title: 'Light from outside', body: 'Streetlights and passing cars can reach the room at any hour.' },
+  ],
 };
 
 export const FEATURES_INTRO = {
-  eyebrow: 'Engineered for deeper sleep',
-  title: 'Small details. Total darkness.',
-  body: 'Every EclipseCore blind is built around one idea: if light can’t find a gap, it can’t wake you up.',
+  title: 'Designed to keep every bit of light out',
+  body: 'From the fabric to the frame seal, every part of EclipseCore is there to stop light getting into the room.',
 };
 
 export const FEATURES: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'moon', title: '100% blackout', body: 'Blackout honeycomb fabric inside a foam-sealed frame — no gaps for light to creep around the edges.' },
-  { icon: 'tool', title: 'Drill-free install', body: 'Press-fits inside your window recess. No tools, no screws, no damage — ideal for renters.' },
+  { icon: 'moon', title: '100% blackout', body: 'Blackout honeycomb fabric in a foam-sealed frame, with no gaps for light at the edges.' },
+  { icon: 'tool', title: 'Drill-free install', body: 'Press-fits inside your window recess with no tools, screws or damage. Ideal for rented homes.' },
   { icon: 'thermo', title: 'Thermal insulating', body: 'Honeycomb cells trap air to help keep rooms cooler in summer and warmer in winter.' },
-  { icon: 'wave', title: 'Quieter rooms', body: 'The cellular fabric softens outside noise for a calmer, more restful space.' },
-  { icon: 'child', title: 'Cordless & child-safe', body: 'No cords or chains to tangle or pull. Simply glide the handle to open and close.' },
+  { icon: 'wave', title: 'Quieter rooms', body: 'The cellular fabric softens outside noise for a calmer room.' },
+  { icon: 'child', title: 'Cordless & child-safe', body: 'No cords or chains to tangle or pull. A handle glides the blind open and closed.' },
   { icon: 'ruler', title: 'Made to measure', body: 'Built to your exact window size, to the nearest 1/8 inch, in four fabrics and two frame finishes.' },
 ];
 
 export const USE_CASES = {
-  eyebrow: 'Sleep on your schedule',
-  title: 'Rest deeply, at any hour of the day.',
-  body: 'Whether you work nights, nap with a newborn or just want a proper lie-in, EclipseCore turns any room dark in seconds — and it’s light and easy to handle every day.',
+  title: 'A dark room at any time of day',
+  body: 'For night-shift workers, nurseries, home theaters or a weekend lie-in. EclipseCore darkens a room in seconds and is easy to use every day.',
   items: ['Bedrooms', 'Nurseries', 'Night-shift sleepers', 'Home theaters', 'Rentals & apartments', 'Home offices'],
 };
 
 export const EASY_FIT = {
-  eyebrow: 'How it works',
-  title: 'Installed in minutes. No drill required.',
-  body: 'The frame clicks together by hand and press-fits inside your window recess. No tools, no screws and no wall damage — so it works just as well in a rental as it does at home.',
+  title: 'Installs in minutes, without a drill',
+  body: 'The frame clicks together by hand and press-fits inside your window recess. There are no screws and no wall damage, so it suits rented homes as well as your own.',
 };
 
 export const HOW_IT_WORKS = [
-  { image: '/img/eclipse/howitworks-1.jpg', title: 'Click the frame together', text: 'Slot the frame pieces together by hand — each side clicks into place.' },
+  { image: '/img/eclipse/howitworks-1.jpg', title: 'Click the frame together', text: 'Slot the frame pieces together by hand. Each side clicks into place.' },
   { image: '/img/eclipse/howitworks-2.webp', title: 'Apply the seal foam', text: 'Peel the backing off the foam strips and press them onto the frame.' },
   { image: '/img/eclipse/howitworks-3.webp', title: 'Press-fit into the window', text: 'Push the frame into your window recess so every edge sits snug. This is what keeps light out.' },
   { image: '/img/eclipse/howitworks-4.webp', title: 'Add screws (optional)', text: 'For extra stability, pre-made holes on the sides let you add screws if you want them.' },
   { image: '/img/eclipse/howitworks-5.webp', title: 'Set the tension', text: 'Lift the clip, adjust the blind until the tension feels right, then close the clip.' },
-  { image: '/img/eclipse/howitworks-6.webp', title: 'Glide to total darkness', text: 'Take the handle and gently pull the blind closed. Lights out.' },
+  { image: '/img/eclipse/howitworks-6.webp', title: 'Glide to total darkness', text: 'Take the handle and gently pull the blind closed.' },
 ];
 
 export const REVIEWS_INTRO = {
-  eyebrow: 'Customer reviews',
-  title: 'Darker rooms. Better mornings.',
+  title: 'What our customers say',
 };
 
 export const TESTIMONIALS = [
   {
-    headline: 'The room forgot what light felt like.',
     author: 'Sarah J.',
     text: "I never realised how much early morning light was waking me up. These blinds made a huge difference — the bedroom stays dark until we're actually ready to get up.",
   },
   {
-    headline: 'No drilling, no damage, no light.',
     author: 'David M.',
     text: "Ordered on Tuesday, installed by Friday. The Easy Fit system really does work without drilling — perfect as we're renting. Solid quality for the price.",
   },
   {
-    headline: 'Nap time finally works.',
     author: 'Emma R.',
     text: "We got these for our toddler's room and the difference is night and day (literally). Nap times have been so much easier since the room is actually dark.",
   },
@@ -118,9 +106,8 @@ export const TESTIMONIALS = [
 export type CompareValue = 'yes' | 'partial' | 'no';
 
 export const COMPARISON = {
-  eyebrow: 'Compare',
-  title: 'How EclipseCore compares.',
-  body: 'An honest side-by-side with the window coverings most people try first.',
+  title: 'How EclipseCore compares',
+  body: 'A side-by-side look at the window coverings most people try first.',
   columns: ['EclipseCore', 'Standard blinds', 'Blackout curtains'],
   rows: [
     { label: '100% blackout, no edge gaps', values: ['yes', 'no', 'no'] },
@@ -137,9 +124,8 @@ export const COMPARISON = {
 /* --------------------------------------------------------------- Measure -- */
 
 export const MEASURE_INTRO = {
-  eyebrow: 'Measuring made simple',
-  title: 'Measure once. Fit perfectly.',
-  body: 'You only need a steel tape measure and five minutes. Give us the exact size of your window opening — we take care of the rest.',
+  title: 'How to measure your window',
+  body: 'All you need is a steel tape measure and about five minutes. Give us the exact size of the window opening and we will make the blind to fit.',
 };
 
 export const MEASURE_STEPS = [
@@ -169,7 +155,7 @@ export const MEASURE_TIPS = [
   'Measure each window individually',
   'Use a steel tape measure, in inches',
   'Round to the nearest 1/8 inch',
-  'Enter the exact opening size — don’t add or subtract anything',
+  'Enter the exact opening size, without adding or subtracting anything',
   'Never measure your old blinds',
 ];
 
@@ -177,7 +163,7 @@ export const GUARANTEES: { icon: IconName; title: string; body: string; href?: s
   { icon: 'shield', title: 'Your Next Fit Guarantee™', body: 'Made a genuine measuring mistake? We’ll remake your blind to the corrected size.*', href: '/how-to-measure#guarantee' },
   { icon: 'badge', title: '5-year warranty', body: 'Every blind is covered against manufacturing defects on components and fabric.' },
   { icon: 'swatch', title: 'Free fabric samples', body: 'See and feel the fabric at home first. Up to 10 samples, delivered free.', href: '/shop#samples' },
-  { icon: 'chat', title: 'Real people, in Texas', body: 'Questions about sizing or fitting? Our US-based team is happy to help.', href: '/faq' },
+  { icon: 'chat', title: 'Help from our US team', body: 'Questions about sizing or fitting? Our Texas-based team is happy to help.', href: '/faq' },
 ];
 
 export const FIT_GUARANTEE = {
@@ -189,7 +175,7 @@ export const FIT_GUARANTEE = {
   benefits: [
     'Protection against genuine measuring mistakes',
     'Replacement made to corrected measurements',
-    'Simple claim process — just send photos',
+    'A simple claim process using photos',
     'Available on eligible custom-made blinds',
   ],
   steps: [
@@ -207,24 +193,24 @@ export const FIT_GUARANTEE = {
 
 export const PRODUCT_BULLETS = [
   'Blocks 100% of outside light when closed',
-  'Drill-free — press-fits inside your window frame',
+  'Drill-free: press-fits inside your window frame',
   'Custom made to your exact measurements',
 ];
 
 export const PRODUCT_DETAILS = [
-  'Experience complete darkness with effortless installation. EclipseCore honeycomb blinds are designed for maximum light blocking and an easy setup — creating the perfect environment for sleeping, relaxing or watching movies.',
+  'Experience complete darkness with effortless installation. EclipseCore honeycomb blinds are designed for maximum light blocking and an easy setup, creating the perfect environment for sleeping, relaxing or watching movies.',
   "Unlike traditional blinds, they use a drill-free installation system, so you don't need tools, screws or professional help. Simply press-fit them inside your square or rectangular window frame for a secure, snug fit.",
   'Every blind is custom made to measure, so you get excellent light-blocking performance, a clean modern look and lasting comfort.',
 ];
 
 export const KEY_FEATURES = [
-  '100% blackout performance — blocks outside light completely when closed',
-  'Drill-free installation — no tools, screws or professional help required',
-  'Perfect for renters and apartments — no damage to window frames',
+  '100% blackout performance: blocks outside light completely when closed',
+  'Drill-free installation: no tools, screws or professional help required',
+  'Perfect for renters and apartments: no damage to window frames',
   'Honeycomb cellular design traps air for improved insulation and energy efficiency',
   'Helps reduce heat in summer and retain warmth in winter',
   'Custom made to your exact window measurements for a perfect fit',
-  'Quick installation — most customers finish in just a few minutes',
+  'Quick installation: most customers finish in just a few minutes',
   'Suitable for bedrooms, nurseries, media rooms and apartments',
 ];
 
@@ -232,7 +218,7 @@ export const SPECIFICATIONS = [
   { label: 'Product type', value: 'Blackout honeycomb blind' },
   { label: 'Light control', value: '100% blackout' },
   { label: 'Fabric', value: 'Honeycomb cellular fabric' },
-  { label: 'Installation', value: 'Drill-free — no tools required' },
+  { label: 'Installation', value: 'Drill-free, no tools required' },
   { label: 'Insulation', value: 'Honeycomb cells trap air for thermal efficiency' },
   { label: 'Mounting', value: 'Inside square or rectangular window frame' },
   { label: 'Min. frame depth', value: '1.5–2 inches' },
@@ -267,7 +253,7 @@ export const EASY_MAINTENANCE = [
 
 export const CHILD_SAFETY = [
   'At Your Next Blinds, safety is a top priority. All of our blinds are designed in accordance with modern child safety standards.',
-  'EclipseCore is fully cordless — there are no cords or chains to tangle or pull.',
+  'EclipseCore is fully cordless. There are no cords or chains to tangle or pull.',
 ];
 
 /* ------------------------------------------------------------------- FAQ -- */
@@ -284,7 +270,7 @@ export const FAQS: Faq[] = [
   },
   {
     q: 'How do I measure my windows?',
-    a: 'Measure the inside width at the top, middle and bottom, and the inside height on the left, center and right. Use the smallest of each and enter the exact opening size — don’t add or subtract anything. Our measuring guide walks you through it step by step.',
+    a: 'Measure the inside width at the top, middle and bottom, and the inside height on the left, center and right. Use the smallest of each and enter the exact opening size, without adding or subtracting anything. Our measuring guide walks you through it step by step.',
   },
   {
     q: 'What if I measure wrong?',

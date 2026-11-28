@@ -14,17 +14,8 @@ const inter = localFont({
   display: 'swap',
 });
 
-const serif = localFont({
-  src: [
-    { path: './fonts/instrument-serif.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/instrument-serif-italic.woff2', weight: '400', style: 'italic' },
-  ],
-  variable: '--font-serif',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'EclipseCore Honeycomb Blackout Blinds — Drill-Free & Made to Measure | Your Next Blinds',
+  title: 'EclipseCore Honeycomb Blackout Blinds | Drill-Free, Made to Measure | Your Next Blinds',
   description:
     'Custom-made honeycomb blackout blinds that press-fit inside your window frame. 100% blackout, no drilling, thermal insulating, backed by our Fit Guarantee and a 5-year warranty.',
   robots: { index: false, follow: false },
@@ -32,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${serif.variable}`}>
+    <html lang="en" className={inter.variable}>
       <body className="antialiased">
         <CartProvider>
           <Header />

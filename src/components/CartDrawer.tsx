@@ -34,10 +34,10 @@ export default function CartDrawer() {
         aria-label="Your cart"
       >
         <div className="flex items-center justify-between px-6 h-[72px] border-b border-line">
-          <p className="heading-display text-[28px]">
-            Your cart <span className="font-sans text-base text-muted">({count})</span>
+          <p className="text-lg font-semibold">
+            Your cart <span className="font-normal text-muted">({count})</span>
           </p>
-          <button onClick={() => setOpen(false)} className="p-2 -mr-2 rounded-full text-muted hover:text-foreground hover:bg-linen" aria-label="Close cart">
+          <button onClick={() => setOpen(false)} className="p-2 -mr-2 text-muted hover:text-foreground" aria-label="Close cart">
             <Icon name="close" />
           </button>
         </div>
@@ -45,20 +45,17 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto px-6 py-5">
           {items.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-center py-16">
-              <span className="w-16 h-16 rounded-full bg-linen flex items-center justify-center text-primary">
-                <Icon name="moon" className="w-7 h-7" />
-              </span>
-              <p className="mt-5 heading-display text-3xl">Your cart is empty</p>
-              <p className="mt-2 text-sm text-muted max-w-[260px]">Build a blind made to your exact window size — it only takes a minute.</p>
-              <Link href="/shop" onClick={() => setOpen(false)} className="mt-6 rounded-full bg-primary px-7 py-3.5 font-semibold text-white hover:bg-primary-dark">
+              <p className="text-lg font-semibold">Your cart is empty</p>
+              <p className="mt-2 text-sm text-muted max-w-[260px]">Build a blind made to your exact window size. It only takes a minute.</p>
+              <Link href="/shop" onClick={() => setOpen(false)} className="mt-6 rounded-md bg-primary px-7 py-3.5 font-semibold text-white hover:bg-primary-dark">
                 Customize Your Blind
               </Link>
             </div>
           ) : (
             <ul className="flex flex-col gap-4">
               {items.map((item) => (
-                <li key={item.id} className="flex gap-4 pb-4 border-b border-line last:border-0 animate-fade-up">
-                  <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-linen">
+                <li key={item.id} className="flex gap-4 pb-4 border-b border-line last:border-0">
+                  <div className="w-20 h-20 shrink-0 rounded-md overflow-hidden bg-linen">
                     {item.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.image} alt="" className="w-full h-full object-contain" />
@@ -82,7 +79,7 @@ export default function CartDrawer() {
                     </ul>
                     <div className="mt-3 flex items-center justify-between">
                       {item.kind === 'blind' ? (
-                        <div className="flex items-center rounded-full border border-line">
+                        <div className="flex items-center rounded-md border border-line">
                           <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty - 1)} aria-label="Decrease quantity">
                             <Icon name="minus" className="w-3.5 h-3.5" />
                           </button>
@@ -105,17 +102,15 @@ export default function CartDrawer() {
           )}
 
           {items.length > 0 && !hasSample && (
-            <div className="mt-2 rounded-2xl bg-linen p-4 flex items-center gap-3">
-              <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shrink-0">
-                <Icon name="swatch" className="w-5 h-5" />
-              </span>
+            <div className="mt-2 rounded-md bg-linen p-4 flex items-center gap-3">
+              <Icon name="swatch" className="w-5 h-5 shrink-0 text-primary" />
               <div className="flex-1">
                 <p className="text-sm font-semibold">Add free fabric samples</p>
-                <p className="text-xs text-muted">See every color at home — on us.</p>
+                <p className="text-xs text-muted">See every color at home, free of charge.</p>
               </div>
               <button
                 onClick={() => add({ kind: 'sample', title: 'Free Fabric Samples', details: ['White, Cream, Graphite, Blue'], unitPrice: 0 })}
-                className="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+                className="rounded-md border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
               >
                 Add
               </button>
@@ -125,12 +120,9 @@ export default function CartDrawer() {
 
         {items.length > 0 && (
           <div className="border-t border-line px-6 pt-5 pb-6 bg-white">
-            <div className="flex items-center gap-2 rounded-xl border border-dashed border-primary/30 bg-primary-soft/50 px-3 py-2.5 text-xs text-primary mb-4">
-              <Icon name="tag" className="w-4 h-4 shrink-0" />
-              <span>
-                Use code <span className="font-bold tracking-wide">{PROMO.code}</span> at checkout for an extra {PROMO.codePercent}% off.
-              </span>
-            </div>
+            <p className="mb-4 text-xs text-muted">
+              Use code <span className="font-semibold text-foreground">{PROMO.code}</span> at checkout for an extra {PROMO.codePercent}% off.
+            </p>
             <div className="flex justify-between items-baseline">
               <span className="text-muted">Subtotal</span>
               <span className="font-semibold text-xl tabular-nums">{formatUSD(subtotal)}</span>
@@ -138,11 +130,11 @@ export default function CartDrawer() {
             <p className="text-xs text-muted mt-1">Shipping and taxes calculated at checkout.</p>
             <button
               onClick={() => setNotice(true)}
-              className="mt-4 w-full rounded-full bg-primary py-4 font-semibold text-white transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
+              className="mt-4 w-full rounded-md bg-primary py-4 font-semibold text-white transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
             >
-              <Icon name="lock" className="w-4 h-4" /> Secure Checkout
+              <Icon name="lock" className="w-4 h-4" /> Checkout
             </button>
-            {notice && <p className="mt-2 text-center text-xs text-primary bg-primary-soft rounded-lg py-2">Design preview — checkout connects to Shopify at launch.</p>}
+            {notice && <p className="mt-2 text-center text-xs text-primary bg-primary-soft rounded-md py-2">Design preview — checkout connects to Shopify at launch.</p>}
             <div className="mt-4 flex items-center justify-center gap-4 text-[11px] text-muted">
               <span className="flex items-center gap-1"><Icon name="shield" className="w-3.5 h-3.5 text-primary" /> Fit Guarantee</span>
               <span className="flex items-center gap-1"><Icon name="badge" className="w-3.5 h-3.5 text-primary" /> 5-year warranty</span>

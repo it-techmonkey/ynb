@@ -1,5 +1,5 @@
 import Hero from '@/components/home/Hero';
-import TrustMarquee from '@/components/sections/TrustMarquee';
+import ValueBar from '@/components/sections/ValueBar';
 import Problem from '@/components/sections/Problem';
 import Features from '@/components/sections/Features';
 import UseCases from '@/components/sections/UseCases';
@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <TrustMarquee />
+      <ValueBar />
       <Problem />
       <Features />
       <UseCases />

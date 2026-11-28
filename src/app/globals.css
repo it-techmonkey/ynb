@@ -2,9 +2,9 @@
 
 /*
  * Your Next Blinds — design tokens.
- * Calm, premium "sleep" palette: warm linen + white surfaces, deep night ink
- * for dark sections, the brand green for every action, and a soft brass
- * accent used sparingly (stars, small highlights).
+ * Quiet, neutral palette: white and soft stone surfaces, deep ink for dark
+ * sections, the brand green for every action. A pale mint is the only accent
+ * on dark backgrounds; gold is reserved for review stars.
  */
 :root {
   --background: #ffffff;
@@ -14,11 +14,12 @@
   --primary: #00473c;
   --primary-dark: #00332b;
   --primary-soft: #e7f0ed;
-  --linen: #f6f3ee;
-  --sand: #ebe5da;
-  --line: #e7e2da;
-  --muted: #5d6662;
-  --brass: #c19a5b;
+  --linen: #f5f4f0;
+  --sand: #e8e6e0;
+  --line: #e6e4df;
+  --muted: #5b6360;
+  --mint: #a8d5c8;
+  --star: #e0a336;
 }
 
 @theme inline {
@@ -33,9 +34,9 @@
   --color-sand: var(--sand);
   --color-line: var(--line);
   --color-muted: var(--muted);
-  --color-brass: var(--brass);
+  --color-mint: var(--mint);
+  --color-star: var(--star);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
-  --font-display: var(--font-serif), Georgia, 'Times New Roman', serif;
   --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -80,16 +81,17 @@ p {
   text-wrap: pretty;
 }
 
-/* Serif display headings: Instrument Serif ships one weight, so size and
-   tight tracking do the work. <em> inside a heading switches to the italic. */
-.heading-display {
-  font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.015em;
-  line-height: 1.04;
-}
-.heading-display em {
-  font-style: italic;
+/* Display headings: Inter at semibold with tight tracking. Kept in the
+   components layer so utilities (sizes, colours) can still override it. */
+@layer components {
+  .heading-display {
+    font-weight: 600;
+    letter-spacing: -0.028em;
+    line-height: 1.12;
+  }
+  .heading-display em {
+    font-style: normal;
+  }
 }
 
 a:focus-visible,
@@ -111,7 +113,7 @@ summary:focus-visible {
 
 /* Page-load entrance, used above the fold (hero) where scroll reveal can't run. */
 @keyframes fade-up {
-  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
   to { opacity: 1; transform: none; }
 }
 @keyframes fade-in {
@@ -119,7 +121,7 @@ summary:focus-visible {
   to { opacity: 1; }
 }
 .animate-fade-up {
-  animation: fade-up 0.9s var(--ease-out-soft) both;
+  animation: fade-up 0.8s var(--ease-out-soft) both;
   animation-delay: var(--d, 0ms);
 }
 .animate-fade-in {
@@ -134,65 +136,19 @@ summary:focus-visible {
  */
 [data-reveal] {
   transition:
-    opacity 0.9s var(--ease-out-soft),
-    transform 0.9s var(--ease-out-soft);
+    opacity 0.8s var(--ease-out-soft),
+    transform 0.8s var(--ease-out-soft);
   transition-delay: var(--d, 0ms);
 }
 html[data-reveal-ready] [data-reveal]:not([data-in]) {
   opacity: 0;
-  transform: translate3d(0, 28px, 0);
+  transform: translate3d(0, 16px, 0);
 }
 html[data-reveal-ready] [data-reveal='fade']:not([data-in]) {
   transform: none;
 }
 html[data-reveal-ready] [data-reveal='zoom']:not([data-in]) {
-  transform: scale(0.965);
-}
-
-/* Infinite trust strip. The track holds two copies of the list. */
-@keyframes marquee {
-  to { transform: translate3d(-50%, 0, 0); }
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 45s linear infinite;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-.marquee-mask {
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-
-/* Slow "breathing" glow behind dark hero/CTA media. */
-@keyframes glow {
-  0%, 100% { opacity: 0.55; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.06); }
-}
-.animate-glow {
-  animation: glow 9s ease-in-out infinite;
-}
-
-/* Gentle pulse for the "drag" hint on the room slider handle. */
-@keyframes nudge {
-  0%, 100% { transform: translate(-50%, -50%); }
-  50% { transform: translate(calc(-50% - 6px), -50%); }
-}
-.animate-nudge {
-  animation: nudge 1.6s ease-in-out infinite;
-}
-
-/* Animated underline for text links. */
-.link-underline {
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 0% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size 0.35s var(--ease-out-soft);
-}
-.link-underline:hover {
-  background-size: 100% 1px;
+  transform: scale(0.985);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -202,7 +158,6 @@ html[data-reveal-ready] [data-reveal='zoom']:not([data-in]) {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .marquee-track { animation: none !important; }
   html[data-reveal-ready] [data-reveal]:not([data-in]) {
     opacity: 1;
     transform: none;

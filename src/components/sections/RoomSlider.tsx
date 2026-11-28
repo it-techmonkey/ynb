@@ -27,7 +27,6 @@ const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2,
 
 export default function RoomSlider({ className = '', controls = true }: { className?: string; controls?: boolean }) {
   const [t, setT] = useState(0); // 0 = fully open, 1 = fully closed
-  const [touched, setTouched] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const anim = useRef<number | null>(null);
@@ -68,7 +67,6 @@ export default function RoomSlider({ className = '', controls = true }: { classN
 
   const edge = STACK - (STACK - WIN.left) * t; // blind's leading edge, % from left
   const closed = t > 0.985;
-  const lightIn = closed ? 0 : Math.round((1 - t) * 100);
   const daylight = Math.max(0, 1 - t * 1.15);
 
   const fromPointer = (e: PointerEvent) => {
@@ -92,10 +90,9 @@ export default function RoomSlider({ className = '', controls = true }: { classN
     <div className={className}>
       <div
         ref={box}
-        className="relative aspect-square w-full overflow-hidden rounded-[28px] bg-ink select-none touch-none cursor-ew-resize shadow-[0_40px_80px_-40px_rgba(13,23,20,0.6)] ring-1 ring-black/5"
+        className="relative aspect-square w-full overflow-hidden rounded-lg bg-ink select-none touch-none cursor-ew-resize"
         onPointerDown={(e) => {
           stopAnim();
-          setTouched(true);
           dragging.current = true;
           (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
           fromPointer(e);
@@ -201,40 +198,16 @@ export default function RoomSlider({ className = '', controls = true }: { classN
         >
           <div className="h-full w-[5px] rounded-sm bg-linear-to-r from-[#2c323b] via-[#4a525d] to-[#2c323b] shadow-[2px_0_6px_rgba(0,0,0,0.35)]" />
           <div
-            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink shadow-lg ring-4 ring-white/30 ${
-              !touched && closed ? 'animate-nudge' : ''
-            }`}
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-ink shadow-md"
           >
             <Icon name="arrows" className="h-4 w-4" strokeWidth={2} />
-          </div>
-        </div>
-
-        {/* Status */}
-        <span
-          className={`absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-md transition-colors duration-500 ${
-            closed ? 'bg-primary/90 text-white' : 'bg-white/90 text-ink'
-          }`}
-        >
-          <span className={`h-1.5 w-1.5 rounded-full ${closed ? 'bg-brass' : 'bg-amber-400'}`} />
-          {closed ? '100% blackout — no light gets in' : t < 0.03 ? 'Fully open — drag to close' : 'Drag to close'}
-        </span>
-        <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-60 rounded-2xl bg-white/90 backdrop-blur-md px-4 py-3 shadow-lg">
-          <div className="flex items-center justify-between text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted">
-            <span className="flex items-center gap-1.5">
-              <Icon name={closed ? 'moon' : 'sun'} className={`h-3.5 w-3.5 ${closed ? 'text-primary' : 'text-amber-500'}`} />
-              Light entering room
-            </span>
-            <span className={`tabular-nums text-sm tracking-normal ${closed ? 'text-primary' : 'text-ink'}`}>{lightIn}%</span>
-          </div>
-          <div className="mt-2 h-1.5 rounded-full bg-black/10 overflow-hidden">
-            <div className="h-full rounded-full bg-linear-to-r from-amber-300 to-amber-500 transition-[width] duration-150" style={{ width: `${lightIn}%` }} />
           </div>
         </div>
       </div>
 
       {controls && (
-      <div className="mt-5 flex items-center gap-4">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Open</span>
+      <div className="mt-4 flex items-center gap-4">
+        <span className="text-[13px] text-muted">Open</span>
         <input
           type="range"
           min={0}
@@ -242,15 +215,15 @@ export default function RoomSlider({ className = '', controls = true }: { classN
           value={Math.round(t * 100)}
           onChange={(e) => {
             stopAnim();
-            setTouched(true);
             setT(Number(e.target.value) / 100);
           }}
           className="flex-1 accent-primary h-1.5 cursor-pointer"
           aria-label="Blind position"
         />
-        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Closed</span>
+        <span className="text-[13px] text-muted">Closed</span>
       </div>
       )}
+      {controls && <p className="mt-2 text-center text-[13px] text-muted">Drag the blind or the slider to see the difference.</p>}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Configurator from '@/components/shop/Configurator';
 import ProductDetails from '@/components/shop/ProductDetails';
-import TrustMarquee from '@/components/sections/TrustMarquee';
+import ValueBar from '@/components/sections/ValueBar';
 import Problem from '@/components/sections/Problem';
 import Features from '@/components/sections/Features';
 import Install from '@/components/sections/Install';
@@ -29,12 +29,12 @@ export default function ShopPage() {
         <span className="text-foreground/80">{PRODUCT.shortTitle}</span>
       </nav>
       <Configurator />
-      <TrustMarquee />
+      <ValueBar />
       <ProductDetails />
       <Problem />
       <Features ctaHref={TO_CONFIGURATOR} />
       <Install ctaHref={TO_CONFIGURATOR} />
-      <Reviews ctaHref={TO_CONFIGURATOR} />
+      <Reviews />
       <Comparison ctaHref={TO_CONFIGURATOR} />
       <Guarantees />
       <FaqSection items={FAQS.slice(0, 6)} />

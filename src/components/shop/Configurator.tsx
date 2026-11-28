@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useCart } from '../CartContext';
-import { CheckDot, Icon, IconTile, PriceTag, Stars } from '../ui';
+import { CheckDot, Icon, PriceTag, Stars } from '../ui';
 import { MeasureReassurance } from '../sections/MeasureGuarantee';
 import { BLIND_COLORS, FRAME_COLORS, GALLERY, OPENINGS, PRODUCT, ROOM_TYPES, SIZE_LIMITS, type OpeningId } from '@/data/product';
 import { FIT_GUARANTEE, PRODUCT_BULLETS, PROMO, RATING } from '@/data/content';
@@ -63,11 +63,11 @@ function DimField({
     <div>
       <div className={`grid gap-2.5 ${unit === 'in' ? 'grid-cols-[1fr_120px]' : 'grid-cols-1'}`}>
         <label
-          className={`block rounded-xl border bg-white px-4 py-2.5 transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 ${
+          className={`block rounded-md border bg-white px-4 py-2.5 transition-colors focus-within:border-primary focus-within:ring-1 focus-within:ring-primary ${
             error ? 'border-red-400' : 'border-line hover:border-foreground/30'
           }`}
         >
-          <span className="block text-[11px] font-medium uppercase tracking-wider text-muted">
+          <span className="block text-xs text-muted">
             {label} ({unit === 'cm' ? 'cm' : 'inches'})
           </span>
           <input
@@ -80,8 +80,8 @@ function DimField({
           />
         </label>
         {unit === 'in' && (
-          <label className="block rounded-xl border border-line bg-white px-4 py-2.5 transition-colors hover:border-foreground/30 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
-            <span className="block text-[11px] font-medium uppercase tracking-wider text-muted">Fraction</span>
+          <label className="block rounded-md border border-line bg-white px-4 py-2.5 transition-colors hover:border-foreground/30 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+            <span className="block text-xs text-muted">Fraction</span>
             <select
               value={value.eighth}
               onChange={(e) => onChange({ ...value, eighth: Number(e.target.value) })}
@@ -229,7 +229,7 @@ export default function Configurator() {
       <div id="configure" className="site-container pt-2 pb-16 md:pb-24 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
         {/* Gallery */}
         <div className="lg:sticky lg:top-24 lg:self-start min-w-0">
-          <div className="group relative aspect-square rounded-[28px] overflow-hidden bg-linen">
+          <div className="group relative aspect-square rounded-lg overflow-hidden bg-linen">
             <Image
               key={mainSrc}
               src={mainSrc}
@@ -239,24 +239,21 @@ export default function Configurator() {
               preload={slide === 0 && !openingPreview}
               className="object-contain animate-fade-in"
             />
-            <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-3 py-1.5 text-xs font-semibold shadow-sm">
-              <Icon name="moon" className="w-3.5 h-3.5 text-primary" /> 100% blackout
-            </span>
             <button
               onClick={() => go(slide - 1)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-sm ring-1 ring-black/5 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
               aria-label="Previous image"
             >
               <Icon name="arrow" className="w-4 h-4 rotate-180" />
             </button>
             <button
               onClick={() => go(slide + 1)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105"
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-sm ring-1 ring-black/5 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
               aria-label="Next image"
             >
               <Icon name="arrow" className="w-4 h-4" />
             </button>
-            <span className="absolute bottom-4 right-4 rounded-full bg-ink/70 backdrop-blur px-3 py-1 text-xs font-medium text-white tabular-nums">
+            <span className="absolute bottom-4 right-4 rounded bg-white/90 px-2 py-0.5 text-xs text-foreground/70 tabular-nums">
               {openingPreview ? 'Opening preview' : `${slide + 1} / ${GALLERY.length}`}
             </span>
           </div>
@@ -265,7 +262,7 @@ export default function Configurator() {
               <button
                 key={g.src}
                 onClick={() => go(i)}
-                className={`relative w-[72px] h-[72px] shrink-0 rounded-xl overflow-hidden bg-linen transition-all ${
+                className={`relative w-[72px] h-[72px] shrink-0 rounded-md overflow-hidden bg-linen transition-opacity ${
                   !openingPreview && slide === i ? 'ring-2 ring-primary' : 'ring-1 ring-line opacity-70 hover:opacity-100'
                 }`}
                 aria-label={`Show ${g.alt}`}
@@ -278,12 +275,11 @@ export default function Configurator() {
 
         {/* Details + configurator */}
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Drill-free · Made to measure</p>
-          <h1 className="heading-display mt-3 text-[40px] md:text-5xl">{PRODUCT.shortTitle}</h1>
+          <h1 className="heading-display text-3xl md:text-[36px]">{PRODUCT.shortTitle}</h1>
           <a href="#reviews" className="mt-4 inline-flex items-center gap-2.5 text-sm">
             <Stars value={RATING.score} className="w-4 h-4" />
             <span className="text-muted">
-              <span className="font-semibold text-foreground">{RATING.score}/5</span> · {RATING.label}
+              <span className="font-semibold text-foreground">{RATING.score} out of 5</span> on {RATING.source}
             </span>
           </a>
           <ul className="mt-6 space-y-2.5">
@@ -295,7 +291,7 @@ export default function Configurator() {
           </ul>
 
           {/* Price card */}
-          <div className="mt-7 rounded-[24px] bg-linen p-5 md:p-6">
+          <div className="mt-7 rounded-lg bg-linen p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <PriceTag price={displayed} size="lg" from={price === null} />
               {price !== null && (
@@ -318,7 +314,7 @@ export default function Configurator() {
                 <Icon name="shield" className="w-5 h-5 text-primary" />
                 <span>
                   <span className="block text-xs text-muted">Measured wrong?</span>
-                  <span className="font-semibold link-underline">We’ll remake it*</span>
+                  <span className="font-semibold underline underline-offset-4 decoration-foreground/30">We’ll remake it*</span>
                 </span>
               </Link>
             </div>
@@ -331,7 +327,7 @@ export default function Configurator() {
                 title="Enter your window size"
                 done={sizeValid}
                 aside={
-                  <div className="inline-flex rounded-full bg-linen p-1 text-xs">
+                  <div className="inline-flex rounded-md border border-line p-0.5 text-xs">
                     {(['in', 'cm'] as Unit[]).map((u) => (
                       <button
                         key={u}
@@ -340,7 +336,7 @@ export default function Configurator() {
                           setWidth({ whole: '', eighth: 0 });
                           setHeight({ whole: '', eighth: 0 });
                         }}
-                        className={`rounded-full px-3.5 py-1.5 transition-all ${unit === u ? 'bg-white shadow-sm font-semibold text-primary' : 'text-muted hover:text-foreground'}`}
+                        className={`rounded px-3.5 py-1.5 transition-colors ${unit === u ? 'bg-primary font-semibold text-white' : 'text-muted hover:text-foreground'}`}
                       >
                         {u === 'in' ? 'Inches' : 'cm'}
                       </button>
@@ -356,13 +352,13 @@ export default function Configurator() {
                   <MeasureReassurance />
                 </div>
                 <p className="mt-6 text-sm font-medium">
-                  Name this blind <span className="font-normal text-muted">(optional — handy for multiple windows)</span>
+                  Name this blind <span className="font-normal text-muted">(optional, useful when ordering for several windows)</span>
                 </p>
                 <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                   <select
                     value={room}
                     onChange={(e) => setRoom(e.target.value)}
-                    className="rounded-xl border border-line px-4 py-3 text-sm bg-white outline-none transition-colors hover:border-foreground/30 focus:border-primary"
+                    className="rounded-md border border-line px-4 py-3 text-sm bg-white outline-none transition-colors hover:border-foreground/30 focus:border-primary"
                     aria-label="Room"
                   >
                     <option value="">Room</option>
@@ -375,7 +371,7 @@ export default function Configurator() {
                     onChange={(e) => setLabel(e.target.value.slice(0, 40))}
                     placeholder="e.g. West wall"
                     aria-label="Window label"
-                    className="rounded-xl border border-line px-4 py-3 text-sm outline-none transition-colors hover:border-foreground/30 focus:border-primary placeholder:text-foreground/35"
+                    className="rounded-md border border-line px-4 py-3 text-sm outline-none transition-colors hover:border-foreground/30 focus:border-primary placeholder:text-foreground/35"
                   />
                 </div>
               </Step>
@@ -398,9 +394,8 @@ export default function Configurator() {
                   <Swatch key={c.id} hex={c.hex} name={c.name} active={frame.id === c.id} onClick={() => setFrame(c)} />
                 ))}
               </div>
-              <button onClick={addSamples} className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                <Icon name="swatch" className="w-4 h-4" />
-                <span className="link-underline">Not sure? Order free fabric samples</span>
+              <button onClick={addSamples} className="mt-6 text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
+                Not sure? Order free fabric samples
               </button>
             </Step>
 
@@ -414,13 +409,13 @@ export default function Configurator() {
                       setOpening(o.id);
                       setOpeningPreview(o.image);
                     }}
-                    className={`group rounded-2xl overflow-hidden text-left bg-white transition-all duration-300 ${
-                      opening === o.id ? 'ring-2 ring-primary shadow-md' : 'ring-1 ring-line hover:ring-foreground/30'
+                    className={`rounded-md overflow-hidden text-left bg-white transition-shadow ${
+                      opening === o.id ? 'ring-2 ring-primary' : 'ring-1 ring-line hover:ring-foreground/30'
                     }`}
                     aria-pressed={opening === o.id}
                   >
                     <span className="relative block aspect-[5/4] bg-linen overflow-hidden">
-                      <Image src={o.image} alt="" fill sizes="160px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={o.image} alt="" fill sizes="160px" className="object-cover" />
                     </span>
                     <span className="block px-3 py-2.5 text-xs">
                       <span className={`block font-semibold ${opening === o.id ? 'text-primary' : ''}`}>{o.name}</span>
@@ -435,7 +430,7 @@ export default function Configurator() {
           {/* Add to cart */}
           <div ref={ctaRef} className="pt-7 border-t border-line">
             <div className="flex items-center gap-3">
-              <div className="flex items-center rounded-full border border-line h-14">
+              <div className="flex items-center rounded-md border border-line h-14">
                 <button className="px-4 h-full text-muted hover:text-foreground" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity">
                   <Icon name="minus" className="w-4 h-4" />
                 </button>
@@ -448,8 +443,8 @@ export default function Configurator() {
               </div>
               <button
                 onClick={() => addToCart(false)}
-                className={`flex-1 h-14 rounded-full font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 ${
-                  added ? 'bg-primary-dark' : 'bg-primary hover:bg-primary-dark hover:shadow-[0_14px_30px_-12px_rgba(0,71,60,0.75)]'
+                className={`flex-1 h-14 rounded-md font-semibold text-white transition-colors flex items-center justify-center gap-2 ${
+                  added ? 'bg-primary-dark' : 'bg-primary hover:bg-primary-dark'
                 }`}
               >
                 {added ? (
@@ -465,7 +460,7 @@ export default function Configurator() {
             </div>
             <button
               onClick={() => addToCart(true)}
-              className="mt-3 w-full h-14 rounded-full border border-foreground/15 font-semibold transition-colors hover:border-foreground/40"
+              className="mt-3 w-full h-14 rounded-md border border-foreground/20 font-semibold transition-colors hover:border-foreground/50"
             >
               Buy Now
             </button>
@@ -479,48 +474,40 @@ export default function Configurator() {
           </div>
 
           {/* Shop with confidence */}
-          <div className="mt-8 grid sm:grid-cols-2 gap-3">
-            <Link href="/how-to-measure#guarantee" className="group flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4 transition-colors hover:bg-linen">
-              <IconTile>
-                <Icon name="shield" className="w-5 h-5" />
-              </IconTile>
+          <ul className="mt-8 border-t border-line divide-y divide-line text-sm">
+            <li className="flex items-start gap-3.5 py-4">
+              <Icon name="shield" className="w-5 h-5 shrink-0 text-primary" />
               <span>
-                <span className="block text-sm font-semibold">{FIT_GUARANTEE.name}</span>
-                <span className="block text-[13px] text-muted leading-snug">Measured wrong? We’ll make it right.*</span>
+                <span className="font-semibold">{FIT_GUARANTEE.name}.</span>{' '}
+                <span className="text-muted">Measured wrong? We’ll remake it to the corrected size.* </span>
+                <Link href="/how-to-measure#guarantee" className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
+                  Details
+                </Link>
               </span>
-            </Link>
-            <div id="samples" className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
-              <IconTile>
-                <Icon name="swatch" className="w-5 h-5" />
-              </IconTile>
-              <span className="flex-1">
-                <span className="block text-sm font-semibold">Free fabric samples</span>
-                <span className="block text-[13px] text-muted leading-snug">Up to 10, delivered free.</span>
-                <button onClick={addSamples} className="mt-1.5 text-[13px] font-semibold text-primary underline underline-offset-2">
+            </li>
+            <li id="samples" className="flex items-start gap-3.5 py-4">
+              <Icon name="swatch" className="w-5 h-5 shrink-0 text-primary" />
+              <span>
+                <span className="font-semibold">Free fabric samples.</span> <span className="text-muted">Up to 10, delivered free. </span>
+                <button onClick={addSamples} className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
                   Add to cart
                 </button>
               </span>
-            </div>
-            <div className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
-              <IconTile>
-                <Icon name="badge" className="w-5 h-5" />
-              </IconTile>
+            </li>
+            <li className="flex items-start gap-3.5 py-4">
+              <Icon name="badge" className="w-5 h-5 shrink-0 text-primary" />
               <span>
-                <span className="block text-sm font-semibold">5-year warranty</span>
-                <span className="block text-[13px] text-muted leading-snug">On components and fabric.</span>
+                <span className="font-semibold">5-year warranty.</span> <span className="text-muted">Covers components and fabric.</span>
               </span>
-            </div>
-            <div className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
-              <IconTile>
-                <Icon name="pin" className="w-5 h-5" />
-              </IconTile>
+            </li>
+            <li className="flex items-start gap-3.5 py-4">
+              <Icon name="truck" className="w-5 h-5 shrink-0 text-primary" />
               <span>
-                <span className="block text-sm font-semibold">Designed in Texas</span>
-                <span className="block text-[13px] text-muted leading-snug">Custom made for your windows.</span>
+                <span className="font-semibold">Made to order in 3–5 business days.</span> <span className="text-muted">Most orders arrive within 7–12 business days.</span>
               </span>
-            </div>
-          </div>
-          <p className="mt-3 text-[11px] text-muted">{FIT_GUARANTEE.disclaimer}</p>
+            </li>
+          </ul>
+          <p className="mt-1 text-[11px] text-muted">{FIT_GUARANTEE.disclaimer}</p>
         </div>
       </div>
 
@@ -533,7 +520,7 @@ export default function Configurator() {
       >
         <div className="site-container py-3 flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-3 flex-1 min-w-0">
-            <span className="relative w-11 h-11 rounded-lg overflow-hidden bg-linen shrink-0">
+            <span className="relative w-11 h-11 rounded-md overflow-hidden bg-linen shrink-0">
               <Image src={GALLERY[color.image ?? 0].src} alt="" fill sizes="44px" className="object-contain" />
             </span>
             <span className="min-w-0">
@@ -547,7 +534,7 @@ export default function Configurator() {
           <button
             onClick={() => (ready ? addToCart(true) : addToCart(false))}
             tabIndex={sticky ? 0 : -1}
-            className="rounded-full bg-primary px-7 py-3 text-sm font-semibold text-white hover:bg-primary-dark transition-colors"
+            className="rounded-md bg-primary px-7 py-3 text-sm font-semibold text-white hover:bg-primary-dark transition-colors"
           >
             {ready ? 'Buy Now' : 'Finish Customizing'}
           </button>

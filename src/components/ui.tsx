@@ -65,7 +65,7 @@ export function Icon({ name, className = 'w-5 h-5', ...rest }: { name: IconName 
   );
 }
 
-export function Stars({ value = 5, className = 'w-4 h-4', color = 'text-brass' }: { value?: number; className?: string; color?: string }) {
+export function Stars({ value = 5, className = 'w-4 h-4', color = 'text-star' }: { value?: number; className?: string; color?: string }) {
   return (
     <span className="inline-flex items-center gap-0.5" role="img" aria-label={`${value} out of 5 stars`}>
       {[1, 2, 3, 4, 5].map((i) => {
@@ -118,21 +118,11 @@ export function Reveal({
   );
 }
 
-export function Eyebrow({ children, light = false, className = '' }: { children: ReactNode; light?: boolean; className?: string }) {
-  return (
-    <p className={`inline-flex items-center gap-2 text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] ${light ? 'text-brass' : 'text-primary'} ${className}`}>
-      <span className={`h-px w-6 ${light ? 'bg-brass/60' : 'bg-primary/40'}`} aria-hidden="true" />
-      {children}
-    </p>
-  );
-}
-
 export function SectionHeading({
   title,
   sub,
   center = false,
   light = false,
-  eyebrow,
   className = '',
   as: H = 'h2',
 }: {
@@ -140,22 +130,20 @@ export function SectionHeading({
   sub?: ReactNode;
   center?: boolean;
   light?: boolean;
-  eyebrow?: string;
   className?: string;
   as?: 'h1' | 'h2';
 }) {
   return (
     <Reveal className={`${center ? 'mx-auto text-center max-w-2xl flex flex-col items-center' : 'max-w-xl'} ${className}`}>
-      {eyebrow && <Eyebrow light={light} className="mb-4">{eyebrow}</Eyebrow>}
-      <H className={`heading-display text-[40px] md:text-5xl lg:text-[56px] ${light ? 'text-white' : 'text-foreground'}`}>{title}</H>
-      {sub && <p className={`mt-5 text-base md:text-lg leading-relaxed ${light ? 'text-white/65' : 'text-muted'}`}>{sub}</p>}
+      <H className={`heading-display text-[28px] md:text-[34px] lg:text-[40px] ${light ? 'text-white' : 'text-foreground'}`}>{title}</H>
+      {sub && <p className={`mt-4 text-base md:text-[17px] leading-relaxed max-w-xl ${light ? 'text-white/65' : 'text-muted'}`}>{sub}</p>}
     </Reveal>
   );
 }
 
 const BUTTON_STYLES = {
-  primary: 'bg-primary text-white hover:bg-primary-dark shadow-[0_8px_24px_-12px_rgba(0,71,60,0.7)] hover:shadow-[0_14px_30px_-12px_rgba(0,71,60,0.75)]',
-  outline: 'border border-foreground/15 text-foreground bg-white hover:border-foreground/40',
+  primary: 'bg-primary text-white hover:bg-primary-dark',
+  outline: 'border border-foreground/20 text-foreground bg-white hover:border-foreground/50 hover:bg-linen',
   dark: 'bg-ink text-white hover:bg-ink-2',
   light: 'bg-white text-ink hover:bg-linen',
   outlineLight: 'border border-white/25 text-white hover:border-white/70 hover:bg-white/5',
@@ -164,7 +152,7 @@ const BUTTON_STYLES = {
 export type ButtonVariant = keyof typeof BUTTON_STYLES;
 
 export const buttonClass = (variant: ButtonVariant = 'primary', className = '') =>
-  `group inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold transition-all duration-300 hover:-translate-y-px active:translate-y-0 ${BUTTON_STYLES[variant]} ${className}`;
+  `group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 text-[15px] font-semibold transition-colors duration-200 ${BUTTON_STYLES[variant]} ${className}`;
 
 export function ButtonLink({
   href,
@@ -182,12 +170,12 @@ export function ButtonLink({
   return (
     <Link href={href} className={buttonClass(variant, className)}>
       {children}
-      {arrow && <Icon name="arrow" className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />}
+      {arrow && <Icon name="arrow" className="w-4 h-4" />}
     </Link>
   );
 }
 
-/** Price with the struck-through compare-at and a "Save 50%" pill. */
+/** Price with the struck-through compare-at and the sale saving. */
 export function PriceTag({
   price,
   size = 'md',
@@ -206,7 +194,7 @@ export function PriceTag({
       <span className={`${priceCls} font-semibold tracking-tight tabular-nums ${onDark ? 'text-white' : 'text-foreground'}`}>{formatUSD(price)}</span>
       <span className={`text-sm line-through tabular-nums ${onDark ? 'text-white/45' : 'text-muted/70'}`}>{formatUSD(compareAt(price))}</span>
       {size !== 'sm' && (
-        <span className={`self-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${onDark ? 'bg-brass/20 text-brass' : 'bg-primary-soft text-primary'}`}>
+        <span className={`text-sm font-semibold ${onDark ? 'text-mint' : 'text-primary'}`}>
           Save {PROMO.flashSalePercent}%
         </span>
       )}
@@ -214,21 +202,7 @@ export function PriceTag({
   );
 }
 
-export function IconTile({ children, light = false }: { children: ReactNode; light?: boolean }) {
-  return (
-    <span
-      className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center ${light ? 'bg-white/8 text-brass ring-1 ring-white/10' : 'bg-primary-soft text-primary'}`}
-    >
-      {children}
-    </span>
-  );
-}
-
-/** Small round check used in bullet lists. */
+/** Plain check mark used in bullet lists. */
 export function CheckDot({ light = false }: { light?: boolean }) {
-  return (
-    <span className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${light ? 'bg-white/10 text-brass' : 'bg-primary-soft text-primary'}`}>
-      <Icon name="check" className="w-3 h-3" strokeWidth={3} />
-    </span>
-  );
+  return <Icon name="check" className={`mt-0.5 w-4.5 h-4.5 shrink-0 ${light ? 'text-mint' : 'text-primary'}`} strokeWidth={2.2} />;
 }

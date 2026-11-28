@@ -51,7 +51,7 @@ export default function Footer() {
               <ul className="mt-5 space-y-3">
                 {c.links.map((l) => (
                   <li key={l.label}>
-                    <Link href={l.href} className="link-underline hover:text-white transition-colors">
+                    <Link href={l.href} className="hover:text-white transition-colors">
                       {l.label}
                     </Link>
                   </li>
@@ -64,16 +64,16 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               <li>
                 <a href={CONTACT.phoneHref} className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Icon name="phone" className="w-4 h-4 text-brass" /> {CONTACT.phone}
+                  <Icon name="phone" className="w-4 h-4 text-mint" /> {CONTACT.phone}
                 </a>
               </li>
               <li>
                 <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2 hover:text-white transition-colors [overflow-wrap:anywhere]">
-                  <Icon name="mail" className="w-4 h-4 shrink-0 text-brass" /> {CONTACT.email}
+                  <Icon name="mail" className="w-4 h-4 shrink-0 text-mint" /> {CONTACT.email}
                 </a>
               </li>
               <li className="flex gap-2">
-                <Icon name="pin" className="w-4 h-4 shrink-0 mt-0.5 text-brass" />
+                <Icon name="pin" className="w-4 h-4 shrink-0 mt-0.5 text-mint" />
                 <span>
                   {CONTACT.address[0]}
                   <br />

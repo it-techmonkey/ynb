@@ -1,47 +1,53 @@
-import { ButtonLink, Icon, PriceTag, Reveal } from '../ui';
-import BlackoutPhoto from './BlackoutPhoto';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ButtonLink, CheckDot, PriceTag, Reveal } from '../ui';
 import { FROM_PRICE } from '@/lib/pricing';
 
+const POINTS = ['Made to your exact window size', 'Fits in minutes, no drilling', 'Fit Guarantee and 5-year warranty'];
+
+/** Closing call to action: copy on the left, a real room photo on the right. */
 export default function FinalCta({ ctaHref = '/shop' }: { ctaHref?: string }) {
   return (
-    <section className="bg-white pb-16 md:pb-24 pt-4">
-      <div className="site-container">
-        <Reveal variant="zoom" className="relative rounded-[32px] bg-ink overflow-hidden grid md:grid-cols-2 items-stretch">
-          <div
-            className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/40 blur-3xl animate-glow"
-            aria-hidden="true"
-          />
-          <div className="relative p-8 sm:p-10 md:p-14 lg:p-16 flex flex-col justify-center text-white">
-            <h2 className="heading-display text-[40px] md:text-5xl lg:text-6xl">
-              Your darkest, <em className="text-brass">deepest</em> sleep starts tonight.
-            </h2>
-            <p className="mt-5 text-white/65 text-lg leading-relaxed max-w-md">
-              Made for your exact window, installed in minutes and backed by our Fit Guarantee.
-            </p>
-            <div className="mt-8">
-              <PriceTag price={FROM_PRICE} from onDark />
-            </div>
-            <div className="mt-8 flex flex-col sm:flex-row gap-3">
-              <ButtonLink href={ctaHref} variant="light" arrow>
-                Customize Your Blind
-              </ButtonLink>
-              <ButtonLink href="/how-to-measure" variant="outlineLight">
-                How to Measure
-              </ButtonLink>
-            </div>
-            <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/60">
-              {['Free fabric samples', '5-year warranty', 'Designed in Texas'].map((t) => (
-                <li key={t} className="flex items-center gap-2">
-                  <Icon name="check" className="w-4 h-4 text-brass" strokeWidth={2.4} /> {t}
-                </li>
-              ))}
-            </ul>
+    <section className="bg-linen py-20 md:py-28">
+      <div className="site-container grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
+        <Reveal className="max-w-lg">
+          <h2 className="heading-display text-[28px] md:text-[34px] lg:text-[40px]">Sleep in total darkness, starting tonight</h2>
+          <p className="mt-5 text-muted text-base md:text-[17px] leading-relaxed">
+            Close the gaps where light gets in. EclipseCore is made for your window, fits without tools and keeps the room dark from edge to edge.
+          </p>
+          <ul className="mt-7 space-y-2.5">
+            {POINTS.map((p) => (
+              <li key={p} className="flex items-center gap-2.5 text-[15px]">
+                <CheckDot /> {p}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 pt-7 border-t border-sand">
+            <PriceTag price={FROM_PRICE} from />
           </div>
-          <div className="relative min-h-[300px] md:min-h-[520px]">
-            <BlackoutPhoto />
-            <span className="absolute top-5 right-5 inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-md px-3.5 py-1.5 text-xs font-semibold text-white ring-1 ring-white/20">
-              <Icon name="moon" className="w-3.5 h-3.5 text-brass" /> 100% blackout
-            </span>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <ButtonLink href={ctaHref}>Customize Your Blind</ButtonLink>
+            <ButtonLink href="/how-to-measure" variant="outline">
+              How to Measure
+            </ButtonLink>
+          </div>
+          <p className="mt-5 text-sm text-muted">
+            Not ready yet?{' '}
+            <Link href="/shop#samples" className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
+              Order free fabric samples
+            </Link>
+          </p>
+        </Reveal>
+
+        <Reveal variant="fade" delay={100}>
+          <div className="relative aspect-square rounded-lg overflow-hidden bg-ink">
+            <Image
+              src="/img/eclipse/eclipseCore4.webp"
+              alt="Two EclipseCore blackout blinds being closed in a bedroom"
+              fill
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className="object-cover"
+            />
           </div>
         </Reveal>
       </div>
