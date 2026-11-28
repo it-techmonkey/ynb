@@ -29,8 +29,7 @@ export const RATING = {
 
 export const HERO = {
   title: 'Total darkness, whenever you need it',
-  body: 'Made-to-measure honeycomb blackout blinds that press-fit inside your window frame. No drilling, no gaps at the edges and no early-morning light.',
-  points: ['Fit Guarantee', '5-year warranty', 'Cordless & child-safe'],
+  body: 'Custom-fit blackout blinds that press into your window frame. No drilling. No light gaps.',
 };
 
 export const VALUE_PROPS: { icon: IconName; title: string; body: string }[] = [
@@ -41,38 +40,32 @@ export const VALUE_PROPS: { icon: IconName; title: string; body: string }[] = [
 ];
 
 export const PROBLEM = {
-  title: 'Most blinds and curtains still let light in',
-  body: 'Streetlights, headlights and early sunrises slip around the edges of ordinary blinds and through curtain fabric. Even a thin line of light can disturb deep sleep, so you wake earlier and feel less rested.',
+  title: 'Most blinds still let light in',
+  body: 'Light slips around the edges and through the fabric. Even a thin line of it can wake you up.',
   points: [
-    { title: 'Gaps at the edges', body: 'Most blinds leave a gap on every side, so light spills around them.' },
-    { title: 'Fabric that glows', body: 'Many blackout curtains still let light show through the weave.' },
-    { title: 'Light from outside', body: 'Streetlights and passing cars can reach the room at any hour.' },
+    { title: 'Gaps at the edges', body: 'Light spills around the sides.' },
+    { title: 'Thin fabric', body: 'Light shows through the weave.' },
+    { title: 'Early sunrises', body: 'Daylight arrives before you are ready.' },
   ],
 };
 
 export const FEATURES_INTRO = {
-  title: 'Designed to keep every bit of light out',
-  body: 'From the fabric to the frame seal, every part of EclipseCore is there to stop light getting into the room.',
+  title: 'Built to keep light out',
+  body: 'A sealed frame and blackout fabric. Nothing gets through.',
 };
 
 export const FEATURES: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'moon', title: '100% blackout', body: 'Blackout honeycomb fabric in a foam-sealed frame, with no gaps for light at the edges.' },
-  { icon: 'tool', title: 'Drill-free install', body: 'Press-fits inside your window recess with no tools, screws or damage. Ideal for rented homes.' },
-  { icon: 'thermo', title: 'Thermal insulating', body: 'Honeycomb cells trap air to help keep rooms cooler in summer and warmer in winter.' },
-  { icon: 'wave', title: 'Quieter rooms', body: 'The cellular fabric softens outside noise for a calmer room.' },
-  { icon: 'child', title: 'Cordless & child-safe', body: 'No cords or chains to tangle or pull. A handle glides the blind open and closed.' },
-  { icon: 'ruler', title: 'Made to measure', body: 'Built to your exact window size, to the nearest 1/8 inch, in four fabrics and two frame finishes.' },
+  { icon: 'moon', title: '100% blackout', body: 'No gaps at the edges.' },
+  { icon: 'tool', title: 'No drilling', body: 'Presses into your window. Safe for rentals.' },
+  { icon: 'thermo', title: 'Keeps rooms cooler', body: 'Holds heat out in summer and in during winter.' },
+  { icon: 'wave', title: 'Quieter rooms', body: 'Softens outside noise.' },
+  { icon: 'child', title: 'Cordless and child-safe', body: 'No cords or chains.' },
+  { icon: 'ruler', title: 'Made to measure', body: 'Made to your exact size.' },
 ];
 
-export const USE_CASES = {
-  title: 'A dark room at any time of day',
-  body: 'For night-shift workers, nurseries, home theaters or a weekend lie-in. EclipseCore darkens a room in seconds and is easy to use every day.',
-  items: ['Bedrooms', 'Nurseries', 'Night-shift sleepers', 'Home theaters', 'Rentals & apartments', 'Home offices'],
-};
-
 export const EASY_FIT = {
-  title: 'Installs in minutes, without a drill',
-  body: 'The frame clicks together by hand and press-fits inside your window recess. There are no screws and no wall damage, so it suits rented homes as well as your own.',
+  title: 'Installs in minutes, no drill needed',
+  body: 'The frame clicks together and presses into your window.',
 };
 
 export const HOW_IT_WORKS = [
@@ -106,8 +99,8 @@ export const TESTIMONIALS = [
 export type CompareValue = 'yes' | 'partial' | 'no';
 
 export const COMPARISON = {
-  title: 'How EclipseCore compares',
-  body: 'A side-by-side look at the window coverings most people try first.',
+  title: 'How it compares',
+  body: 'EclipseCore next to the usual options.',
   columns: ['EclipseCore', 'Standard blinds', 'Blackout curtains'],
   rows: [
     { label: '100% blackout, no edge gaps', values: ['yes', 'no', 'no'] },
@@ -124,8 +117,8 @@ export const COMPARISON = {
 /* --------------------------------------------------------------- Measure -- */
 
 export const MEASURE_INTRO = {
-  title: 'How to measure your window',
-  body: 'All you need is a steel tape measure and about five minutes. Give us the exact size of the window opening and we will make the blind to fit.',
+  title: 'Measuring takes five minutes',
+  body: 'Use a steel tape measure. We make the blind to your exact size.',
 };
 
 export const MEASURE_STEPS = [
@@ -157,13 +150,6 @@ export const MEASURE_TIPS = [
   'Round to the nearest 1/8 inch',
   'Enter the exact opening size, without adding or subtracting anything',
   'Never measure your old blinds',
-];
-
-export const GUARANTEES: { icon: IconName; title: string; body: string; href?: string }[] = [
-  { icon: 'shield', title: 'Your Next Fit Guarantee™', body: 'Made a genuine measuring mistake? We’ll remake your blind to the corrected size.*', href: '/how-to-measure#guarantee' },
-  { icon: 'badge', title: '5-year warranty', body: 'Every blind is covered against manufacturing defects on components and fabric.' },
-  { icon: 'truck', title: 'Made to order', body: 'Made in 3–5 business days. Most orders arrive within 7–12 business days.', href: '/faq' },
-  { icon: 'chat', title: 'Help from our US team', body: 'Questions about sizing or fitting? Our Texas-based team is happy to help.', href: '/faq' },
 ];
 
 export const FIT_GUARANTEE = {

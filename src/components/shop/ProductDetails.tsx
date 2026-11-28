@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
-import { Icon, Reveal, SectionHeading } from '../ui';
+import { Reveal, SectionHeading } from '../ui';
 import {
   CHILD_SAFETY,
   EASY_MAINTENANCE,
@@ -65,30 +65,32 @@ const SECTIONS: { title: string; body: ReactNode }[] = [
 ];
 
 export default function ProductDetails() {
-  const [open, setOpen] = useState<number | null>(0);
+  const [tab, setTab] = useState(0);
   return (
     <section id="details" className="bg-white py-20 md:py-28">
-      <div className="site-container grid gap-10 lg:grid-cols-[1fr_1.8fr] lg:gap-20">
-        <SectionHeading title="Product information" className="lg:sticky lg:top-28 lg:self-start" />
-        <Reveal delay={80}>
-          <ul className="border-t border-foreground/15">
-            {SECTIONS.map((s, i) => {
-              const isOpen = open === i;
-              return (
-                <li key={s.title} className="border-b border-line">
-                  <button onClick={() => setOpen(isOpen ? null : i)} className="w-full flex items-center justify-between gap-6 py-5 text-left" aria-expanded={isOpen}>
-                    <span className="text-base md:text-[17px] font-medium">{s.title}</span>
-                    <Icon name={isOpen ? 'minus' : 'plus'} className="w-5 h-5 shrink-0 text-foreground/60" />
-                  </button>
-                  <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
-                    <div className="overflow-hidden">
-                      <div className="pb-7">{s.body}</div>
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+      <div className="site-container">
+        <SectionHeading title="Product information" />
+        <Reveal className="mt-10">
+          <div className="-mx-5 overflow-x-auto px-5 scrollbar-hide" role="tablist" aria-label="Product information">
+            <div className="flex w-max gap-2">
+              {SECTIONS.map((s, i) => (
+                <button
+                  key={s.title}
+                  role="tab"
+                  aria-selected={tab === i}
+                  onClick={() => setTab(i)}
+                  className={`whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
+                    tab === i ? 'bg-foreground text-white' : 'bg-linen text-foreground/75 hover:text-foreground'
+                  }`}
+                >
+                  {s.title}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div key={tab} role="tabpanel" className="mt-8 max-w-3xl animate-fade-in">
+            {SECTIONS[tab].body}
+          </div>
         </Reveal>
       </div>
     </section>

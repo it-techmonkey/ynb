@@ -5,28 +5,6 @@ import { FIT_GUARANTEE, MEASURE_INTRO, MEASURE_REQUIREMENTS, MEASURE_STEPS, MEAS
 
 export const MEASURE_GUIDE_PDF = '/guides/eclipsecore_honeycomb_drillfree_measuring_guide.pdf';
 
-/** Compact reassurance box used inside the configurator. */
-export function MeasureReassurance() {
-  return (
-    <div className="rounded-md bg-linen p-4 flex gap-3">
-      <Icon name="info" className="w-5 h-5 shrink-0 text-primary mt-px" />
-      <div className="text-sm">
-        <p className="font-semibold">Not sure about your measurements?</p>
-        <p className="mt-1 text-muted leading-relaxed">
-          Measure the inside of your frame and use the smallest width and height. Made a mistake? Our{' '}
-          <Link href="/how-to-measure#guarantee" className="font-medium text-primary underline underline-offset-2">
-            Fit Guarantee
-          </Link>{' '}
-          has you covered.
-        </p>
-        <Link href="/how-to-measure" className="mt-2 inline-block text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
-          Read the measuring guide
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 /*
  * Real window photos with dimension lines drawn on top. Coordinates are in a
  * 500×400 box that matches the 5:4 crop of /img/measure/window.webp, where
@@ -113,7 +91,7 @@ export function MeasureSteps({ full = false }: { full?: boolean }) {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
           <SectionHeading title={MEASURE_INTRO.title} sub={MEASURE_INTRO.body} as={full ? 'h1' : 'h2'} />
           <Reveal className="shrink-0">
-            <a href={MEASURE_GUIDE_PDF} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-foreground/20 bg-white px-6 py-3.5 text-[15px] font-semibold hover:border-foreground/50 transition-colors">
+            <a href={MEASURE_GUIDE_PDF} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-white px-6 py-3.5 text-[15px] font-semibold hover:border-foreground/50 transition-colors">
               <Icon name="download" className="w-4 h-4 text-primary" />
               Download PDF guide
             </a>
@@ -122,7 +100,7 @@ export function MeasureSteps({ full = false }: { full?: boolean }) {
 
         <ol className="mt-14 grid gap-5 md:grid-cols-3">
           {MEASURE_STEPS.map((s, i) => (
-            <Reveal as="li" key={s.title} delay={i * 90} className="rounded-lg bg-white p-6 md:p-7">
+            <Reveal as="li" key={s.title} delay={i * 90} className="rounded-2xl bg-white p-6 md:p-7">
               <MeasurePhoto kind={KINDS[i]} />
               <p className="mt-6 text-sm font-medium text-muted">Step {i + 1}</p>
               <h3 className="mt-1 text-lg font-semibold tracking-tight">{s.title}</h3>
@@ -131,17 +109,19 @@ export function MeasureSteps({ full = false }: { full?: boolean }) {
           ))}
         </ol>
 
-        <div className={`mt-5 grid gap-5 ${full ? 'lg:grid-cols-2' : 'lg:grid-cols-[1fr_1.2fr]'}`}>
-          <Reveal className="rounded-lg bg-white p-7 md:p-9">
-            <h3 className="font-semibold">Before you measure</h3>
-            <ul className="mt-5 space-y-3">
-              {MEASURE_REQUIREMENTS.map((r) => (
-                <li key={r} className="flex gap-3 text-[15px]">
-                  <CheckDot /> {r}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+        <div className={`mt-5 grid gap-5 ${full ? 'lg:grid-cols-2' : ''}`}>
+          {full && (
+            <Reveal className="rounded-lg bg-white p-7 md:p-9">
+              <h3 className="font-semibold">Before you measure</h3>
+              <ul className="mt-5 space-y-3">
+                {MEASURE_REQUIREMENTS.map((r) => (
+                  <li key={r} className="flex gap-3 text-[15px]">
+                    <CheckDot /> {r}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          )}
 
           {full ? (
             <Reveal delay={80} className="rounded-lg bg-white p-7 md:p-9">
@@ -155,19 +135,20 @@ export function MeasureSteps({ full = false }: { full?: boolean }) {
               </ul>
             </Reveal>
           ) : (
-            <Reveal delay={80} className="rounded-lg bg-primary p-7 md:p-9 text-white">
-              <p className="text-sm font-medium text-white/70">{FIT_GUARANTEE.name}</p>
-              <h3 className="heading-display mt-2 text-2xl md:text-[28px]">{FIT_GUARANTEE.headline}</h3>
-              <p className="mt-4 text-white/75 leading-relaxed max-w-lg">{FIT_GUARANTEE.intro}</p>
-              <div className="mt-7 flex flex-wrap items-center gap-5">
-                <ButtonLink href="/shop" variant="light">
-                  Customize Your Blind
+            <Reveal delay={80} className="rounded-2xl bg-primary p-7 md:p-10 text-white md:flex md:items-center md:justify-between md:gap-10">
+              <div>
+                <p className="text-sm font-medium text-white/70">{FIT_GUARANTEE.name}</p>
+                <h3 className="heading-display mt-2 text-2xl md:text-[30px]">{FIT_GUARANTEE.headline}</h3>
+                <p className="mt-3 text-white/75 max-w-lg">Made a genuine measuring mistake? We remake your blind to the corrected size.*</p>
+              </div>
+              <div className="mt-6 md:mt-0 flex flex-wrap items-center gap-5 shrink-0">
+                <ButtonLink href="/how-to-measure" variant="light">
+                  Measuring guide
                 </ButtonLink>
                 <Link href="/how-to-measure#guarantee" className="text-sm font-semibold text-white underline underline-offset-4 decoration-white/40 hover:decoration-white">
-                  How the guarantee works
+                  How it works
                 </Link>
               </div>
-              <p className="mt-6 text-xs text-white/45">{FIT_GUARANTEE.disclaimer}</p>
             </Reveal>
           )}
         </div>

@@ -45,8 +45,8 @@ export default function CartDrawer() {
             <div className="h-full flex flex-col items-center justify-center text-center py-16">
               <p className="text-lg font-semibold">Your cart is empty</p>
               <p className="mt-2 text-sm text-muted max-w-[260px]">Build a blind made to your exact window size. It only takes a minute.</p>
-              <Link href="/shop" onClick={() => setOpen(false)} className="mt-6 rounded-md bg-primary px-7 py-3.5 font-semibold text-white hover:bg-primary-dark">
-                Customize Your Blind
+              <Link href="/shop" onClick={() => setOpen(false)} className="mt-6 rounded-full bg-primary px-7 py-3.5 font-semibold text-white hover:bg-primary-dark">
+                Build your blind
               </Link>
             </div>
           ) : (
@@ -102,7 +102,7 @@ export default function CartDrawer() {
             <p className="text-xs text-muted mt-1">Shipping and taxes calculated at checkout.</p>
             <button
               onClick={() => setNotice(true)}
-              className="mt-4 w-full rounded-md bg-primary py-4 font-semibold text-white transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
+              className="mt-4 w-full rounded-full bg-primary py-4 font-semibold text-white transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
             >
               <Icon name="lock" className="w-4 h-4" /> Checkout
             </button>

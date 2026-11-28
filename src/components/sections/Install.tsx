@@ -11,7 +11,7 @@ export default function Install({ id = 'how-it-works', ctaHref = '/shop' }: { id
           <SectionHeading title={EASY_FIT.title} sub={EASY_FIT.body} className="max-w-2xl" />
           <Reveal className="shrink-0">
             <ButtonLink href={ctaHref} variant="outline">
-              Shop Now
+              Shop now
             </ButtonLink>
           </Reveal>
         </div>

@@ -95,9 +95,9 @@ export default function Header() {
             </a>
             <Link
               href="/shop"
-              className="hidden sm:inline-flex items-center rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+              className="hidden sm:inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
             >
-              Shop Now
+              Shop now
             </Link>
             <button
               onClick={() => setOpen(true)}
@@ -133,8 +133,8 @@ export default function Header() {
                 <Icon name="chevron" className="w-5 h-5 -rotate-90 text-foreground/40" />
               </Link>
             ))}
-            <Link href="/shop" tabIndex={menu ? 0 : -1} className="mt-8 rounded-md bg-primary py-4 text-center font-semibold text-white">
-              Customize Your Blind
+            <Link href="/shop" tabIndex={menu ? 0 : -1} className="mt-8 rounded-full bg-primary py-4 text-center font-semibold text-white">
+              Shop now
             </Link>
             <div className="mt-auto pt-8 space-y-2 text-sm text-muted">
               <a href={CONTACT.phoneHref} tabIndex={menu ? 0 : -1} className="flex items-center gap-2">

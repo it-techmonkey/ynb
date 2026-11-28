@@ -58,7 +58,7 @@ export default function Comparison({ ctaHref = '/shop' }: { ctaHref?: string }) 
           </div>
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-5">
             <p className="text-xs text-muted">{COMPARISON.footnote}</p>
-            <ButtonLink href={ctaHref}>Customize Your Blind</ButtonLink>
+            <ButtonLink href={ctaHref}>Shop now</ButtonLink>
           </div>
         </Reveal>
       </div>

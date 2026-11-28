@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import type { CSSProperties, ReactNode, SVGProps } from 'react';
-import { PROMO } from '@/data/content';
-import { compareAt, formatUSD } from '@/lib/pricing';
 
 export type IconName =
   | 'check' | 'star' | 'cart' | 'close' | 'plus' | 'minus' | 'arrow' | 'chevron' | 'moon' | 'shield'
@@ -151,7 +149,7 @@ const BUTTON_STYLES = {
 export type ButtonVariant = keyof typeof BUTTON_STYLES;
 
 export const buttonClass = (variant: ButtonVariant = 'primary', className = '') =>
-  `group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3.5 text-[15px] font-semibold transition-colors duration-200 ${BUTTON_STYLES[variant]} ${className}`;
+  `group inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold transition-colors duration-200 ${BUTTON_STYLES[variant]} ${className}`;
 
 export function ButtonLink({
   href,
@@ -171,33 +169,6 @@ export function ButtonLink({
       {children}
       {arrow && <Icon name="arrow" className="w-4 h-4" />}
     </Link>
-  );
-}
-
-/** Price with the struck-through compare-at and the sale saving. */
-export function PriceTag({
-  price,
-  size = 'md',
-  from = false,
-  onDark = false,
-}: {
-  price: number;
-  size?: 'sm' | 'md' | 'lg';
-  from?: boolean;
-  onDark?: boolean;
-}) {
-  const priceCls = { sm: 'text-base', md: 'text-2xl', lg: 'text-3xl md:text-[34px]' }[size];
-  return (
-    <span className="inline-flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-      {from && <span className={`text-sm ${onDark ? 'text-white/60' : 'text-muted'}`}>From</span>}
-      <span className={`${priceCls} font-semibold tracking-tight tabular-nums ${onDark ? 'text-white' : 'text-foreground'}`}>{formatUSD(price)}</span>
-      <span className={`text-sm line-through tabular-nums ${onDark ? 'text-white/45' : 'text-muted/70'}`}>{formatUSD(compareAt(price))}</span>
-      {size !== 'sm' && (
-        <span className={`text-sm font-semibold ${onDark ? 'text-mint' : 'text-primary'}`}>
-          Save {PROMO.flashSalePercent}%
-        </span>
-      )}
-    </span>
   );
 }
 
