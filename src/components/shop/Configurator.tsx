@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useCart } from '../CartContext';
 import { Icon, Stars } from '../ui';
+import Gallery, { type GalleryItem } from './Gallery';
 import { BLIND_COLORS, FRAME_COLORS, GALLERY, OPENINGS, PRODUCT, ROOM_TYPES, SIZE_LIMITS, type OpeningId } from '@/data/product';
 import { FIT_GUARANTEE, PROMO, RATING } from '@/data/content';
 import { EIGHTHS, FROM_PRICE, compareAt, dispatchWindow, formatUSD, unitPrice } from '@/lib/pricing';
@@ -18,8 +19,12 @@ function inches(d: Dim, unit: Unit): number | null {
   return unit === 'cm' ? n / 2.54 : n + d.eighth / 8;
 }
 
-/* Gallery images shown in the desktop grid under the main image (indexes into GALLERY). */
-const GRID = [4, 5, 8, 9];
+/* Every product photo, then one preview per opening direction (so picking an opening jumps to it). */
+const IMAGES: GalleryItem[] = [
+  ...GALLERY,
+  ...OPENINGS.map((o) => ({ src: o.image, alt: `${o.name} opening direction`, tag: `Opening: ${o.name}` })),
+];
+const OPENING_INDEX = (id: OpeningId) => GALLERY.length + OPENINGS.findIndex((o) => o.id === id);
 
 /* ------------------------------------------------------------------ parts -- */
 
@@ -128,11 +133,9 @@ export default function Configurator() {
   const [dispatch, setDispatch] = useState('');
   const [sticky, setSticky] = useState(false);
   const [added, setAdded] = useState(false);
-  const [allPhotos, setAllPhotos] = useState(false);
   const [slide, setSlide] = useState(0);
   const ctaRef = useRef<HTMLDivElement>(null);
   const sizeRef = useRef<HTMLDivElement>(null);
-  const strip = useRef<HTMLDivElement>(null);
 
   useEffect(() => setDispatch(dispatchWindow(PRODUCT.dispatchDays[0], PRODUCT.dispatchDays[1])), []);
   useEffect(() => {
@@ -161,14 +164,6 @@ export default function Configurator() {
   const displayed = (price ?? FROM_PRICE) * qty;
   const openingOpt = OPENINGS.find((o) => o.id === opening);
   const ready = sizeValid && !!opening;
-
-  // The main image follows the chosen opening, else the chosen fabric color.
-  const main = openingOpt
-    ? { src: openingOpt.image, alt: `${openingOpt.name} opening` }
-    : GALLERY[color.image ?? 0];
-  // Mobile carousel: the main image first, then every other photo.
-  const slides = [main, ...GALLERY.filter((g) => g.src !== main.src)];
-  const extra = GALLERY.filter((_, i) => !GRID.includes(i) && i !== (color.image ?? 0));
 
   const sizeText = () =>
     unit === 'in'
@@ -203,53 +198,12 @@ export default function Configurator() {
     if (buyNow) setOpen(true);
   };
 
-  const onStripScroll = () => {
-    const el = strip.current;
-    if (el) setSlide(Math.round(el.scrollLeft / el.clientWidth));
-  };
-
   return (
     <>
       <div id="configure" className="site-container grid gap-8 pb-16 pt-2 md:pb-24 lg:grid-cols-[1.2fr_1fr] lg:gap-14 xl:gap-20">
-        {/* ------------------------------------------------ Gallery: mobile -- */}
-        <div className="-mx-5 lg:hidden">
-          <div ref={strip} onScroll={onStripScroll} className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide">
-            {slides.map((g, i) => (
-              <div key={g.src} className="relative aspect-square w-full shrink-0 snap-start bg-linen">
-                <Image src={g.src} alt={g.alt} fill sizes="100vw" preload={i === 0} className="object-contain mix-blend-multiply" />
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex justify-center gap-1.5" aria-hidden="true">
-            {slides.map((g, i) => (
-              <span key={g.src} className={`h-1.5 rounded-full transition-all ${i === slide ? 'w-5 bg-foreground' : 'w-1.5 bg-foreground/20'}`} />
-            ))}
-          </div>
-        </div>
-
-        {/* ----------------------------------------------- Gallery: desktop -- */}
-        <div className="hidden min-w-0 lg:block">
-          <div className="relative aspect-square overflow-hidden rounded-3xl bg-linen">
-            <Image key={main.src} src={main.src} alt={main.alt} fill sizes="55vw" preload className="object-contain mix-blend-multiply animate-fade-in" />
-            {openingOpt && (
-              <span className="absolute left-5 top-5 rounded-full bg-white px-3 py-1 text-xs font-medium">Opening: {openingOpt.name}</span>
-            )}
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            {[...GRID.map((i) => GALLERY[i]), ...(allPhotos ? extra : [])].map((g) => (
-              <div key={g.src} className="relative aspect-square overflow-hidden rounded-3xl bg-linen">
-                <Image src={g.src} alt={g.alt} fill sizes="28vw" className="object-cover mix-blend-multiply" />
-              </div>
-            ))}
-          </div>
-          {!allPhotos && (
-            <button
-              onClick={() => setAllPhotos(true)}
-              className="mt-4 w-full rounded-full border border-line py-3 text-sm font-medium transition-colors hover:border-foreground/40"
-            >
-              Show all {GALLERY.length} photos
-            </button>
-          )}
+        {/* ---------------------------------------------------------- Gallery -- */}
+        <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+          <Gallery images={IMAGES} active={slide} onChange={setSlide} />
         </div>
 
         {/* -------------------------------------------------------- Buy box -- */}
@@ -276,7 +230,10 @@ export default function Configurator() {
             <Option label="Fabric" value={color.name}>
               <div className="flex flex-wrap gap-3">
                 {BLIND_COLORS.map((c) => (
-                  <Swatch key={c.id} hex={c.hex} name={c.name} active={color.id === c.id} onClick={() => setColor(c)} />
+                  <Swatch key={c.id} hex={c.hex} name={c.name} active={color.id === c.id} onClick={() => {
+                      setColor(c);
+                      setSlide(c.image ?? 0);
+                    }} />
                 ))}
               </div>
             </Option>
@@ -294,7 +251,10 @@ export default function Configurator() {
                 {OPENINGS.map((o) => (
                   <button
                     key={o.id}
-                    onClick={() => setOpening(o.id)}
+                    onClick={() => {
+                      setOpening(o.id);
+                      setSlide(OPENING_INDEX(o.id));
+                    }}
                     aria-pressed={opening === o.id}
                     className={`flex items-center gap-3 rounded-xl border p-2 pr-3 text-left transition-colors ${
                       opening === o.id ? 'border-primary bg-primary-soft/60' : 'border-line hover:border-foreground/30'

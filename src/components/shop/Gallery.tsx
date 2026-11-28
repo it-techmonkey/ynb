@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from '../ui';
 
 export interface GalleryItem {
@@ -24,21 +25,34 @@ export default function Gallery({ images, active, onChange }: { images: GalleryI
   const rail = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const programmatic = useRef(false);
+  const [edge, setEdge] = useState({ left: false, right: true });
   const n = images.length;
   const current = images[active];
   const go = useCallback((i: number) => onChange(((i % n) + n) % n), [n, onChange]);
 
-  // Keep the active thumbnail in view inside the rail (never scrolls the page).
+  const measureEdges = useCallback(() => {
+    const el = rail.current;
+    if (!el) return;
+    setEdge({ left: el.scrollLeft > 4, right: el.scrollLeft + el.clientWidth < el.scrollWidth - 4 });
+  }, []);
+
+  // Keep the active thumbnail in view inside the strip (never scrolls the page).
   useEffect(() => {
     const el = rail.current;
     const t = el?.children[active] as HTMLElement | undefined;
     if (!el || !t) return;
-    if (el.scrollHeight > el.clientHeight + 1) {
-      if (t.offsetTop < el.scrollTop || t.offsetTop + t.offsetHeight > el.scrollTop + el.clientHeight) el.scrollTo({ top: t.offsetTop - 8, behavior: 'smooth' });
-    } else if (t.offsetLeft < el.scrollLeft || t.offsetLeft + t.offsetWidth > el.scrollLeft + el.clientWidth) {
-      el.scrollTo({ left: t.offsetLeft - 8, behavior: 'smooth' });
+    if (t.offsetLeft < el.scrollLeft + 8 || t.offsetLeft + t.offsetWidth > el.scrollLeft + el.clientWidth - 8) {
+      el.scrollTo({ left: t.offsetLeft - (el.clientWidth - t.offsetWidth) / 2, behavior: 'smooth' });
     }
   }, [active]);
+
+  useEffect(() => {
+    measureEdges();
+    window.addEventListener('resize', measureEdges);
+    return () => window.removeEventListener('resize', measureEdges);
+  }, [measureEdges]);
+
+  const nudge = (dir: 1 | -1) => rail.current?.scrollBy({ left: dir * (rail.current.clientWidth - 80), behavior: 'smooth' });
 
   // Mobile swipe track follows the active index when it changes from outside.
   useEffect(() => {
@@ -77,30 +91,12 @@ export default function Gallery({ images, active, onChange }: { images: GalleryI
 
   const arrow = 'flex h-11 w-11 items-center justify-center rounded-full bg-white text-foreground shadow-md ring-1 ring-black/5 transition hover:scale-105';
 
-  return (
-    <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[84px_1fr] lg:gap-4">
-      {/* Thumbnails: a strip on mobile, a rail on desktop */}
-      <div className="relative order-2 min-w-0 px-5 lg:order-1 lg:px-0">
-        <div ref={rail} className="relative flex gap-2 overflow-x-auto py-0.5 scrollbar-hide lg:absolute lg:inset-0 lg:flex-col lg:overflow-x-visible lg:overflow-y-auto" role="tablist" aria-label="Product photos">
-          {images.map((g, i) => (
-            <button
-              key={g.src}
-              role="tab"
-              aria-selected={i === active}
-              aria-label={`Photo ${i + 1}: ${g.alt}`}
-              onClick={() => go(i)}
-              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-linen transition lg:h-auto lg:w-full lg:aspect-square ${
-                i === active ? 'ring-2 ring-foreground ring-offset-2' : 'opacity-70 hover:opacity-100'
-              }`}
-            >
-              <Image src={g.src} alt="" fill sizes="84px" className="object-contain mix-blend-multiply" />
-            </button>
-          ))}
-        </div>
-      </div>
+  const chev = 'absolute top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-foreground shadow-md ring-1 ring-black/5 transition hover:scale-105 lg:flex';
 
+  return (
+    <div className="flex flex-col gap-4">
       {/* Main image */}
-      <div className="order-1 min-w-0 lg:order-2">
+      <div className="min-w-0">
         {/* Mobile: swipe */}
         <div className="relative -mx-5 lg:hidden">
           <div ref={track} onScroll={onSwipe} className="flex snap-x snap-mandatory overflow-x-auto scrollbar-hide">
@@ -122,7 +118,7 @@ export default function Gallery({ images, active, onChange }: { images: GalleryI
         {/* Desktop: one large image */}
         <div className="group relative hidden aspect-square overflow-hidden rounded-3xl bg-linen lg:block">
           <button onClick={() => setOpen(true)} className="absolute inset-0 cursor-zoom-in" aria-label="Enlarge photo">
-            <Image key={current.src} src={current.src} alt={current.alt} fill sizes="(min-width: 1024px) 45vw, 100vw" preload={active === 0} className="object-contain mix-blend-multiply animate-fade-in" />
+            <Image key={current.src} src={current.src} alt={current.alt} fill sizes="(min-width: 1024px) 600px, 100vw" preload={active === 0} className="object-contain mix-blend-multiply animate-fade-in" />
           </button>
           {current.tag && <span className="pointer-events-none absolute left-5 top-5 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium">{current.tag}</span>}
           <span className="pointer-events-none absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1 text-xs font-medium tabular-nums">
@@ -140,8 +136,39 @@ export default function Gallery({ images, active, onChange }: { images: GalleryI
         </div>
       </div>
 
-      {/* Enlarged viewer */}
-      {open && (
+      {/* Thumbnail strip */}
+      <div className="relative min-w-0">
+        {edge.left && (
+          <button onClick={() => nudge(-1)} className={`${chev} left-1`} aria-label="Scroll photos left">
+            <Icon name="arrow" className="h-4 w-4 rotate-180" />
+          </button>
+        )}
+        <div ref={rail} onScroll={measureEdges} className="flex gap-2.5 overflow-x-auto p-1.5 scrollbar-hide" role="tablist" aria-label="Product photos">
+          {images.map((g, i) => (
+            <button
+              key={g.src}
+              role="tab"
+              aria-selected={i === active}
+              aria-label={`Photo ${i + 1}: ${g.alt}`}
+              onClick={() => go(i)}
+              className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-linen transition lg:h-[76px] lg:w-[76px] ${
+                i === active ? 'ring-2 ring-foreground ring-offset-2' : 'opacity-70 hover:opacity-100'
+              }`}
+            >
+              <Image src={g.src} alt="" fill sizes="80px" className="object-cover" />
+            </button>
+          ))}
+        </div>
+        {edge.right && (
+          <button onClick={() => nudge(1)} className={`${chev} right-1`} aria-label="Scroll photos right">
+            <Icon name="arrow" className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Enlarged viewer: rendered on <body> so no parent (sticky column, header) can sit above it */}
+      {open &&
+        createPortal(
         <div role="dialog" aria-modal="true" aria-label="Product photos" className="fixed inset-0 z-60 flex items-center justify-center bg-ink/95 p-4" onClick={() => setOpen(false)}>
           <button onClick={() => setOpen(false)} className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20" aria-label="Close">
             <Icon name="close" className="h-5 w-5" />
@@ -172,7 +199,8 @@ export default function Gallery({ images, active, onChange }: { images: GalleryI
           <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm tabular-nums text-white/80">
             {active + 1} / {n}
           </p>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

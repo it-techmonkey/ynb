@@ -19,13 +19,13 @@ export interface GalleryImage {
   alt: string;
 }
 
-/** Same order as the live product page gallery. */
+/** Opens on a room shot; colour swatches point at their own front view below. */
 export const GALLERY: GalleryImage[] = [
+  { src: `${G}room-closed.webp`, alt: 'Honeycomb blackout blind in a bedroom window' },
   { src: `${G}graphite.webp`, alt: 'Graphite honeycomb blackout blind, front view' },
   { src: `${G}white.webp`, alt: 'White honeycomb blackout blind, front view' },
   { src: `${G}cream.webp`, alt: 'Cream honeycomb blackout blind, front view' },
   { src: `${G}blue.webp`, alt: 'Blue honeycomb blackout blind, front view' },
-  { src: `${G}room-closed.webp`, alt: 'Blind fully closed in a bedroom' },
   { src: `${G}room-open.webp`, alt: 'Blind partly open in a bedroom' },
   { src: `${G}frame-angle.webp`, alt: 'Blind in its frame, perspective view' },
   { src: `${G}half-open.webp`, alt: 'Blind half open inside the frame' },
@@ -47,10 +47,10 @@ export interface ColorOption {
 }
 
 export const BLIND_COLORS: ColorOption[] = [
-  { id: 'graphite', name: 'Graphite', hex: '#53565b', image: 0 },
-  { id: 'white', name: 'White', hex: '#ffffff', image: 1 },
-  { id: 'cream', name: 'Cream', hex: '#E6E5DE', image: 2 },
-  { id: 'blue', name: 'Blue', hex: '#4A90D9', image: 3 },
+  { id: 'graphite', name: 'Graphite', hex: '#53565b', image: 1 },
+  { id: 'white', name: 'White', hex: '#ffffff', image: 2 },
+  { id: 'cream', name: 'Cream', hex: '#E6E5DE', image: 3 },
+  { id: 'blue', name: 'Blue', hex: '#4A90D9', image: 4 },
 ];
 
 export const FRAME_COLORS: ColorOption[] = [
