@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { cdn } from '@/data/product';
+import { ROOM_CLOSED, ROOM_OPEN } from '@/data/product';
 import { Icon } from '../ui';
 
 /*
@@ -20,13 +20,14 @@ const GLASS = { left: 15.6, right: 75.9, top: 14.4, bottom: 74.6 }; // inside th
 const SEAM = 44.8; // blind edge in the half-open photo = mirror axis
 const STACK = 71.4; // leading edge when fully open (fabric stacked at the right)
 
-const OPEN = cdn('lifestyle1.png', 1400);
-const CLOSED = cdn('lifestyle2.png', 1400);
+const OPEN = ROOM_OPEN;
+const CLOSED = ROOM_CLOSED;
 
 const easeInOut = (x: number) => (x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2);
 
-export default function RoomSlider({ className = '' }: { className?: string }) {
+export default function RoomSlider({ className = '', controls = true }: { className?: string; controls?: boolean }) {
   const [t, setT] = useState(0); // 0 = fully open, 1 = fully closed
+  const [touched, setTouched] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const anim = useRef<number | null>(null);
@@ -91,9 +92,10 @@ export default function RoomSlider({ className = '' }: { className?: string }) {
     <div className={className}>
       <div
         ref={box}
-        className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gray-900 select-none touch-none cursor-ew-resize shadow-2xl"
+        className="relative aspect-square w-full overflow-hidden rounded-[28px] bg-ink select-none touch-none cursor-ew-resize shadow-[0_40px_80px_-40px_rgba(13,23,20,0.6)] ring-1 ring-black/5"
         onPointerDown={(e) => {
           stopAnim();
+          setTouched(true);
           dragging.current = true;
           (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
           fromPointer(e);
@@ -126,7 +128,7 @@ export default function RoomSlider({ className = '' }: { className?: string }) {
         </div>
         {/* window mullion over the mirror seam */}
         <div
-          className="absolute pointer-events-none bg-gradient-to-r from-[#cfd3d6] via-[#f2f3f4] to-[#c4c8cb] shadow-[0_0_4px_rgba(0,0,0,0.25)]"
+          className="absolute pointer-events-none bg-linear-to-r from-[#cfd3d6] via-[#f2f3f4] to-[#c4c8cb] shadow-[0_0_4px_rgba(0,0,0,0.25)]"
           style={{ left: `${SEAM - 0.6}%`, width: '1.2%', top: `${GLASS.top}%`, height: `${GLASS.bottom - GLASS.top}%` }}
         />
 
@@ -197,34 +199,42 @@ export default function RoomSlider({ className = '' }: { className?: string }) {
           className="absolute pointer-events-none"
           style={{ left: `${edge}%`, top: `${GLASS.top}%`, height: `${GLASS.bottom - GLASS.top}%`, transform: 'translateX(-50%)' }}
         >
-          <div className="h-full w-[5px] rounded-sm bg-gradient-to-r from-[#2c323b] via-[#4a525d] to-[#2c323b] shadow-[2px_0_6px_rgba(0,0,0,0.35)]" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#1a1a1a] shadow-lg ring-1 ring-black/10">
+          <div className="h-full w-[5px] rounded-sm bg-linear-to-r from-[#2c323b] via-[#4a525d] to-[#2c323b] shadow-[2px_0_6px_rgba(0,0,0,0.35)]" />
+          <div
+            className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink shadow-lg ring-4 ring-white/30 ${
+              !touched && closed ? 'animate-nudge' : ''
+            }`}
+          >
             <Icon name="arrows" className="h-4 w-4" strokeWidth={2} />
           </div>
         </div>
 
         {/* Status */}
         <span
-          className={`absolute top-4 left-4 rounded px-3 py-1.5 text-xs font-bold shadow transition-colors ${closed ? 'bg-[#00473c] text-white' : 'bg-white text-black'}`}
+          className={`absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold shadow-lg backdrop-blur-md transition-colors duration-500 ${
+            closed ? 'bg-primary/90 text-white' : 'bg-white/90 text-ink'
+          }`}
         >
-          {closed ? '100% Blackout — no light gets in' : t < 0.03 ? 'Fully open — drag to close' : 'Drag to close'}
+          <span className={`h-1.5 w-1.5 rounded-full ${closed ? 'bg-brass' : 'bg-amber-400'}`} />
+          {closed ? '100% blackout — no light gets in' : t < 0.03 ? 'Fully open — drag to close' : 'Drag to close'}
         </span>
-        <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-56 rounded-lg bg-white/95 px-3.5 py-2.5 shadow-lg">
-          <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+        <div className="absolute bottom-4 left-4 right-4 sm:right-auto sm:w-60 rounded-2xl bg-white/90 backdrop-blur-md px-4 py-3 shadow-lg">
+          <div className="flex items-center justify-between text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted">
             <span className="flex items-center gap-1.5">
-              <Icon name={closed ? 'moon' : 'sun'} className={`h-3.5 w-3.5 ${closed ? 'text-[#00473c]' : 'text-amber-500'}`} />
+              <Icon name={closed ? 'moon' : 'sun'} className={`h-3.5 w-3.5 ${closed ? 'text-primary' : 'text-amber-500'}`} />
               Light entering room
             </span>
-            <span className={`tabular-nums text-sm ${closed ? 'text-[#00473c]' : 'text-[#1a1a1a]'}`}>{lightIn}%</span>
+            <span className={`tabular-nums text-sm tracking-normal ${closed ? 'text-primary' : 'text-ink'}`}>{lightIn}%</span>
           </div>
-          <div className="mt-1.5 h-1.5 rounded-full bg-gray-200 overflow-hidden">
-            <div className="h-full rounded-full bg-amber-400" style={{ width: `${lightIn}%` }} />
+          <div className="mt-2 h-1.5 rounded-full bg-black/10 overflow-hidden">
+            <div className="h-full rounded-full bg-linear-to-r from-amber-300 to-amber-500 transition-[width] duration-150" style={{ width: `${lightIn}%` }} />
           </div>
         </div>
       </div>
 
-      <div className="mt-4 flex items-center gap-4">
-        <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Open</span>
+      {controls && (
+      <div className="mt-5 flex items-center gap-4">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Open</span>
         <input
           type="range"
           min={0}
@@ -232,13 +242,15 @@ export default function RoomSlider({ className = '' }: { className?: string }) {
           value={Math.round(t * 100)}
           onChange={(e) => {
             stopAnim();
+            setTouched(true);
             setT(Number(e.target.value) / 100);
           }}
-          className="flex-1 accent-[#00473c] h-1.5 cursor-pointer"
+          className="flex-1 accent-primary h-1.5 cursor-pointer"
           aria-label="Blind position"
         />
-        <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Closed</span>
+        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Closed</span>
       </div>
+      )}
     </div>
   );
 }

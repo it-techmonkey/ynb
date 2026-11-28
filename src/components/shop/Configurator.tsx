@@ -4,21 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useCart } from '../CartContext';
-import { Icon, IconTile, PriceTag, Stars } from '../ui';
+import { CheckDot, Icon, IconTile, PriceTag, Stars } from '../ui';
 import { MeasureReassurance } from '../sections/MeasureGuarantee';
-import {
-  BLIND_COLORS,
-  FRAME_COLORS,
-  GALLERY,
-  OPENINGS,
-  PRODUCT,
-  ROOM_TYPES,
-  SIZE_LIMITS,
-  cdn,
-  type OpeningId,
-} from '@/data/product';
-import { FIT_GUARANTEE } from '@/data/content';
-import { EIGHTHS, FROM_PRICE, bandLabel, dispatchWindow, formatUSD, unitPrice } from '@/lib/pricing';
+import { BLIND_COLORS, FRAME_COLORS, GALLERY, OPENINGS, PRODUCT, ROOM_TYPES, SIZE_LIMITS, type OpeningId } from '@/data/product';
+import { FIT_GUARANTEE, PRODUCT_BULLETS, PROMO, RATING } from '@/data/content';
+import { EIGHTHS, FROM_PRICE, bandLabel, compareAt, dispatchWindow, formatUSD, unitPrice } from '@/lib/pricing';
 
 type Unit = 'in' | 'cm';
 type Dim = { whole: string; eighth: number };
@@ -29,17 +19,24 @@ function inches(d: Dim, unit: Unit): number | null {
   return unit === 'cm' ? n / 2.54 : n + d.eighth / 8;
 }
 
-function Panel({ title, open, onToggle, children }: { title: string; open: boolean; onToggle: () => void; children: ReactNode }) {
+function Step({ n, title, done, aside, children, id }: { n: number; title: string; done: boolean; aside?: ReactNode; children: ReactNode; id?: string }) {
   return (
-    <div className="border border-gray-200 rounded-lg mb-4">
-      <button onClick={onToggle} className="w-full flex items-center justify-between px-4 md:px-5 py-4 text-left" aria-expanded={open}>
-        <span className="text-base font-semibold text-[#3a3a3a]">{title}</span>
-        <span className="w-6 h-6 rounded-full bg-[#00473c] text-white flex items-center justify-center">
-          <Icon name={open ? 'close' : 'plus'} className="w-3.5 h-3.5" strokeWidth={2.5} />
-        </span>
-      </button>
-      {open && <div className="px-4 md:px-5 pb-5">{children}</div>}
-    </div>
+    <section id={id} className="py-7 border-t border-line first:border-t-0 first:pt-0">
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="flex items-center gap-3 text-lg font-semibold tracking-tight">
+          <span
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm transition-colors duration-300 ${
+              done ? 'bg-primary text-white' : 'bg-linen text-foreground ring-1 ring-line'
+            }`}
+          >
+            {done ? <Icon name="check" className="w-4 h-4" strokeWidth={2.6} /> : n}
+          </span>
+          {title}
+        </h2>
+        {aside}
+      </div>
+      <div className="mt-5">{children}</div>
+    </section>
   );
 }
 
@@ -64,51 +61,57 @@ function DimField({
   const hi = unit === 'cm' ? Math.round(max * 2.54) : max;
   return (
     <div>
-      <div className="grid grid-cols-2 gap-3">
-        <label className={`block rounded-md border px-3 py-2 focus-within:border-[#00473c] ${error ? 'border-red-400' : 'border-gray-300'}`}>
-          <span className="block text-[11px] text-gray-500">
+      <div className={`grid gap-2.5 ${unit === 'in' ? 'grid-cols-[1fr_120px]' : 'grid-cols-1'}`}>
+        <label
+          className={`block rounded-xl border bg-white px-4 py-2.5 transition-colors focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 ${
+            error ? 'border-red-400' : 'border-line hover:border-foreground/30'
+          }`}
+        >
+          <span className="block text-[11px] font-medium uppercase tracking-wider text-muted">
             {label} ({unit === 'cm' ? 'cm' : 'inches'})
           </span>
           <input
             type="number"
             inputMode="decimal"
-            placeholder={`${lo} - ${hi}`}
+            placeholder={`${lo} – ${hi}`}
             value={value.whole}
             onChange={(e) => onChange({ ...value, whole: e.target.value.slice(0, 6) })}
-            className="w-full text-sm font-medium outline-none bg-transparent [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+            className="w-full text-base font-medium outline-none bg-transparent placeholder:text-foreground/30 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
           />
         </label>
-        {unit === 'in' ? (
-          <label className="block rounded-md border border-gray-300 px-3 py-2 focus-within:border-[#00473c]">
-            <span className="block text-[11px] text-gray-500">Fraction</span>
+        {unit === 'in' && (
+          <label className="block rounded-xl border border-line bg-white px-4 py-2.5 transition-colors hover:border-foreground/30 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+            <span className="block text-[11px] font-medium uppercase tracking-wider text-muted">Fraction</span>
             <select
               value={value.eighth}
               onChange={(e) => onChange({ ...value, eighth: Number(e.target.value) })}
-              className="w-full text-sm font-medium outline-none bg-transparent cursor-pointer"
+              className="w-full text-base font-medium outline-none bg-transparent cursor-pointer"
             >
               {EIGHTHS.map((f, i) => (
                 <option key={f} value={i}>
-                  {f}
+                  {f === '0' ? '—' : `${f}"`}
                 </option>
               ))}
             </select>
           </label>
-        ) : (
-          <span />
         )}
       </div>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
 function Swatch({ hex, name, active, onClick }: { hex: string; name: string; active: boolean; onClick: () => void }) {
   return (
-    <button onClick={onClick} className="flex flex-col items-center gap-1.5" aria-pressed={active}>
-      <span className={`w-14 h-14 md:w-16 md:h-16 rounded-md border-2 p-0.5 transition-colors ${active ? 'border-[#00473c]' : 'border-gray-200 hover:border-gray-400'}`}>
-        <span className="block w-full h-full rounded-[4px] border border-black/5" style={{ background: hex }} />
+    <button onClick={onClick} className="group flex flex-col items-center gap-2" aria-pressed={active} aria-label={name}>
+      <span
+        className={`w-14 h-14 rounded-full p-1 transition-all duration-300 ${
+          active ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-line group-hover:ring-foreground/40'
+        }`}
+      >
+        <span className="block w-full h-full rounded-full border border-black/10 transition-transform duration-300 group-hover:scale-95" style={{ background: hex }} />
       </span>
-      <span className={`text-xs ${active ? 'font-semibold text-[#00473c]' : 'text-gray-600'}`}>{name}</span>
+      <span className={`text-xs ${active ? 'font-semibold text-primary' : 'text-muted'}`}>{name}</span>
     </button>
   );
 }
@@ -120,19 +123,19 @@ export default function Configurator() {
   const [height, setHeight] = useState<Dim>({ whole: '', eighth: 0 });
   const [room, setRoom] = useState('');
   const [label, setLabel] = useState('');
-  const [color, setColor] = useState(BLIND_COLORS[2]);
-  const [frame, setFrame] = useState(FRAME_COLORS[1]);
+  const [color, setColor] = useState(BLIND_COLORS[0]);
+  const [frame, setFrame] = useState(FRAME_COLORS[0]);
   const [opening, setOpening] = useState<OpeningId | null>(null);
   const [qty, setQty] = useState(1);
   const [slide, setSlide] = useState(0);
   const [openingPreview, setOpeningPreview] = useState<string | null>(null);
-  const [measureOpen, setMeasureOpen] = useState(true);
-  const [customizeOpen, setCustomizeOpen] = useState(true);
   const [touched, setTouched] = useState(false);
   const [dispatch, setDispatch] = useState('');
   const [sticky, setSticky] = useState(false);
+  const [added, setAdded] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
+  const thumbs = useRef<HTMLDivElement>(null);
 
   useEffect(() => setDispatch(dispatchWindow(PRODUCT.dispatchDays[0], PRODUCT.dispatchDays[1])), []);
   useEffect(() => {
@@ -142,6 +145,16 @@ export default function Configurator() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+  // Keep the active thumbnail in view (scrolls the strip only, never the page).
+  useEffect(() => {
+    const strip = thumbs.current;
+    const t = strip?.children[slide] as HTMLElement | undefined;
+    if (!strip || !t) return;
+    const left = t.offsetLeft; // strip is position:relative, so this is strip-relative
+    if (left < strip.scrollLeft || left + t.offsetWidth > strip.scrollLeft + strip.clientWidth) {
+      strip.scrollTo({ left: left - 8, behavior: 'smooth' });
+    }
+  }, [slide]);
 
   const w = inches(width, unit);
   const h = inches(height, unit);
@@ -160,8 +173,9 @@ export default function Configurator() {
   const price = useMemo(() => (sizeValid ? unitPrice(w!, h!, opening ?? 'left-to-right') : null), [sizeValid, w, h, opening]);
   const displayed = (price ?? FROM_PRICE) * qty;
   const openingOpt = OPENINGS.find((o) => o.id === opening);
+  const ready = sizeValid && !!opening;
 
-  const mainSrc = openingPreview ?? cdn(GALLERY[slide].file, 1400);
+  const mainSrc = openingPreview ?? GALLERY[slide].src;
   const mainAlt = openingPreview ? `${openingOpt?.name} opening direction` : GALLERY[slide].alt;
 
   const sizeText = () =>
@@ -169,15 +183,18 @@ export default function Configurator() {
       ? `${width.whole}${width.eighth ? ` ${EIGHTHS[width.eighth]}` : ''}" W × ${height.whole}${height.eighth ? ` ${EIGHTHS[height.eighth]}` : ''}" H`
       : `${width.whole} cm W × ${height.whole} cm H`;
 
+  const go = (i: number) => {
+    setOpeningPreview(null);
+    setSlide((i + GALLERY.length) % GALLERY.length);
+  };
+
   const addToCart = (buyNow = false) => {
     setTouched(true);
     if (!sizeValid || price === null) {
-      setMeasureOpen(true);
       measureRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (!opening) {
-      setCustomizeOpen(true);
       document.getElementById('opening-direction')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -186,16 +203,20 @@ export default function Configurator() {
       title: PRODUCT.shortTitle,
       details: [
         sizeText(),
-        ...(room || label ? [`Blind Name: ${[room, label].filter(Boolean).join(' – ')}`] : []),
-        `Blind Color: ${color.name} · Frame Color: ${frame.name}`,
-        `Opening Direction: ${openingOpt?.name}`,
+        ...(room || label ? [`Blind name: ${[room, label].filter(Boolean).join(' – ')}`] : []),
+        `Fabric: ${color.name} · Frame: ${frame.name}`,
+        `Opening: ${openingOpt?.name}`,
       ],
       unitPrice: price,
       qty,
-      image: cdn(GALLERY[color.image ?? 0].file, 300),
+      image: GALLERY[color.image ?? 0].src,
     });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2200);
     if (buyNow) setOpen(true);
   };
+
+  const addSamples = () => add({ kind: 'sample', title: 'Free Fabric Samples', details: ['White, Cream, Graphite, Blue'], unitPrice: 0 });
 
   const pickColor = (c: (typeof BLIND_COLORS)[number]) => {
     setColor(c);
@@ -205,161 +226,187 @@ export default function Configurator() {
 
   return (
     <>
-      <div id="configure" className="site-container pt-2 pb-12 flex flex-col lg:flex-row gap-8 lg:gap-12">
+      <div id="configure" className="site-container pt-2 pb-16 md:pb-24 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
         {/* Gallery */}
-        <div className="w-full lg:w-1/2 lg:sticky lg:top-24 lg:self-start min-w-0">
-          <div className="flex gap-3">
-            <div className="hidden md:flex flex-col gap-2 w-16 shrink-0 max-h-[600px] overflow-y-auto scrollbar-hide">
-              {GALLERY.map((g, i) => (
-                <button
-                  key={g.file}
-                  onClick={() => {
-                    setSlide(i);
-                    setOpeningPreview(null);
-                  }}
-                  className={`relative w-16 h-16 shrink-0 rounded-md overflow-hidden border-2 bg-white ${!openingPreview && slide === i ? 'border-[#00473c]' : 'border-gray-200 hover:border-gray-400'}`}
-                  aria-label={`Show ${g.alt}`}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={cdn(g.file, 160)} alt="" className="w-full h-full object-contain" />
-                </button>
-              ))}
-            </div>
-            <div className="relative flex-1 aspect-square rounded-xl overflow-hidden bg-white ring-1 ring-gray-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img key={mainSrc} src={mainSrc} alt={mainAlt} className="absolute inset-0 w-full h-full object-contain" />
-              <button
-                onClick={() => {
-                  setOpeningPreview(null);
-                  setSlide((s) => (s - 1 + GALLERY.length) % GALLERY.length);
-                }}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 border border-gray-200 shadow flex items-center justify-center"
-                aria-label="Previous image"
-              >
-                <Icon name="arrow" className="w-4 h-4 rotate-180" />
-              </button>
-              <button
-                onClick={() => {
-                  setOpeningPreview(null);
-                  setSlide((s) => (s + 1) % GALLERY.length);
-                }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 border border-gray-200 shadow flex items-center justify-center"
-                aria-label="Next image"
-              >
-                <Icon name="arrow" className="w-4 h-4" />
-              </button>
-            </div>
+        <div className="lg:sticky lg:top-24 lg:self-start min-w-0">
+          <div className="group relative aspect-square rounded-[28px] overflow-hidden bg-linen">
+            <Image
+              key={mainSrc}
+              src={mainSrc}
+              alt={mainAlt}
+              fill
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              preload={slide === 0 && !openingPreview}
+              className="object-contain animate-fade-in"
+            />
+            <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white/90 backdrop-blur px-3 py-1.5 text-xs font-semibold shadow-sm">
+              <Icon name="moon" className="w-3.5 h-3.5 text-primary" /> 100% blackout
+            </span>
+            <button
+              onClick={() => go(slide - 1)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105"
+              aria-label="Previous image"
+            >
+              <Icon name="arrow" className="w-4 h-4 rotate-180" />
+            </button>
+            <button
+              onClick={() => go(slide + 1)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/90 shadow-md flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all hover:scale-105"
+              aria-label="Next image"
+            >
+              <Icon name="arrow" className="w-4 h-4" />
+            </button>
+            <span className="absolute bottom-4 right-4 rounded-full bg-ink/70 backdrop-blur px-3 py-1 text-xs font-medium text-white tabular-nums">
+              {openingPreview ? 'Opening preview' : `${slide + 1} / ${GALLERY.length}`}
+            </span>
           </div>
-          <div className="md:hidden mt-3 flex gap-2 overflow-x-auto scrollbar-hide">
+          <div ref={thumbs} className="relative mt-2 flex gap-2.5 overflow-x-auto scrollbar-hide p-1 -mx-1">
             {GALLERY.map((g, i) => (
               <button
-                key={g.file}
-                onClick={() => {
-                  setSlide(i);
-                  setOpeningPreview(null);
-                }}
-                className={`relative w-16 h-16 shrink-0 rounded-md overflow-hidden border-2 bg-white ${!openingPreview && slide === i ? 'border-[#00473c]' : 'border-gray-200'}`}
+                key={g.src}
+                onClick={() => go(i)}
+                className={`relative w-[72px] h-[72px] shrink-0 rounded-xl overflow-hidden bg-linen transition-all ${
+                  !openingPreview && slide === i ? 'ring-2 ring-primary' : 'ring-1 ring-line opacity-70 hover:opacity-100'
+                }`}
                 aria-label={`Show ${g.alt}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={cdn(g.file, 160)} alt="" className="w-full h-full object-contain" />
+                <Image src={g.src} alt="" fill sizes="72px" className="object-contain" />
               </button>
             ))}
           </div>
         </div>
 
         {/* Details + configurator */}
-        <div className="w-full lg:w-1/2 min-w-0">
-          <h1 className="text-2xl md:text-[28px] font-semibold text-[#3a3a3a] leading-snug">{PRODUCT.title}</h1>
-          <div className="mt-2 flex items-center gap-3">
-            <Stars value={0} className="w-4 h-4" />
-            <a href="#reviews" className="text-xs text-gray-500 hover:text-[#00473c]">(No reviews yet)</a>
-            <a href="#reviews" className="text-xs font-medium text-[#00473c] hover:underline">Write a review</a>
-          </div>
-
-          <div className="mt-5 flex items-center border border-gray-200 rounded-lg px-4 py-3">
-            <span className="w-11 h-11 bg-gray-100 rounded-lg flex items-center justify-center text-[#00473c]">
-              <Icon name="truck" className="w-6 h-6" strokeWidth={1.5} />
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Drill-free · Made to measure</p>
+          <h1 className="heading-display mt-3 text-[40px] md:text-5xl">{PRODUCT.shortTitle}</h1>
+          <a href="#reviews" className="mt-4 inline-flex items-center gap-2.5 text-sm">
+            <Stars value={RATING.score} className="w-4 h-4" />
+            <span className="text-muted">
+              <span className="font-semibold text-foreground">{RATING.score}/5</span> · {RATING.label}
             </span>
-            <div className="ml-3">
-              <p className="text-xs text-gray-500">Estimated Dispatch Date</p>
-              <p className="text-sm font-semibold text-[#00473c]">{dispatch || '…'}</p>
+          </a>
+          <ul className="mt-6 space-y-2.5">
+            {PRODUCT_BULLETS.map((b) => (
+              <li key={b} className="flex gap-2.5 text-[15px]">
+                <CheckDot /> {b}
+              </li>
+            ))}
+          </ul>
+
+          {/* Price card */}
+          <div className="mt-7 rounded-[24px] bg-linen p-5 md:p-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <PriceTag price={displayed} size="lg" from={price === null} />
+              {price !== null && (
+                <span className="text-sm font-medium text-primary">You save {formatUSD(compareAt(displayed) - displayed)}</span>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-muted">
+              {price !== null && w !== null && h !== null ? `Price for size band ${bandLabel(w, h)}. ` : 'Enter your size for an exact price. '}
+              Extra {PROMO.codePercent}% off with <span className="font-semibold text-foreground">{PROMO.code}</span> at checkout.
+            </p>
+            <div className="mt-4 pt-4 border-t border-sand grid sm:grid-cols-2 gap-3 text-sm">
+              <span className="flex items-center gap-2.5">
+                <Icon name="truck" className="w-5 h-5 text-primary" />
+                <span>
+                  <span className="block text-xs text-muted">Estimated dispatch</span>
+                  <span className="font-semibold">{dispatch || '…'}</span>
+                </span>
+              </span>
+              <Link href="/how-to-measure#guarantee" className="group flex items-center gap-2.5">
+                <Icon name="shield" className="w-5 h-5 text-primary" />
+                <span>
+                  <span className="block text-xs text-muted">Measured wrong?</span>
+                  <span className="font-semibold link-underline">We’ll remake it*</span>
+                </span>
+              </Link>
             </div>
           </div>
 
-          <div className="mt-4 border border-gray-200 rounded-lg p-4 md:p-5">
-            <PriceTag price={displayed} from={price === null} />
-            {price !== null && w !== null && h !== null && <p className="mt-2 text-xs text-gray-400">Size: {bandLabel(w, h)}</p>}
-            <Link href="/how-to-measure#guarantee" className="group mt-3 flex items-center gap-2 rounded-md bg-[#00473c]/5 px-3 py-2 hover:bg-[#00473c]/10">
-              <Icon name="shield" className="h-4 w-4 shrink-0 text-[#00473c]" />
-              <span className="text-xs leading-tight text-[#00473c]">
-                <span className="font-semibold">{FIT_GUARANTEE.name}</span> — Measured wrong? We&apos;ll make it right.{' '}
-                <span className="underline underline-offset-2">Learn more</span>
-              </span>
-            </Link>
-          </div>
-
-          <div className="mt-6" ref={measureRef}>
-            <Panel title="Measure your windows" open={measureOpen} onToggle={() => setMeasureOpen((o) => !o)}>
-              <MeasureReassurance />
-              <div className="mt-5 flex justify-end">
-                <div className="inline-flex rounded-md bg-gray-100 p-0.5 text-xs">
-                  {(['in', 'cm'] as Unit[]).map((u) => (
-                    <button
-                      key={u}
-                      onClick={() => {
-                        setUnit(u);
-                        setWidth({ whole: '', eighth: 0 });
-                        setHeight({ whole: '', eighth: 0 });
-                      }}
-                      className={`rounded px-3 py-1.5 ${unit === u ? 'bg-white shadow-sm font-semibold text-[#00473c]' : 'text-gray-600'}`}
-                    >
-                      {u === 'in' ? 'Inches' : 'Centimeters'}
-                    </button>
-                  ))}
+          <div className="mt-8">
+            <div ref={measureRef}>
+              <Step
+                n={1}
+                title="Enter your window size"
+                done={sizeValid}
+                aside={
+                  <div className="inline-flex rounded-full bg-linen p-1 text-xs">
+                    {(['in', 'cm'] as Unit[]).map((u) => (
+                      <button
+                        key={u}
+                        onClick={() => {
+                          setUnit(u);
+                          setWidth({ whole: '', eighth: 0 });
+                          setHeight({ whole: '', eighth: 0 });
+                        }}
+                        className={`rounded-full px-3.5 py-1.5 transition-all ${unit === u ? 'bg-white shadow-sm font-semibold text-primary' : 'text-muted hover:text-foreground'}`}
+                      >
+                        {u === 'in' ? 'Inches' : 'cm'}
+                      </button>
+                    ))}
+                  </div>
+                }
+              >
+                <div className="space-y-3">
+                  <DimField label="Width" value={width} onChange={setWidth} unit={unit} min={SIZE_LIMITS.width.min} max={SIZE_LIMITS.width.max} error={wErr} />
+                  <DimField label="Height" value={height} onChange={setHeight} unit={unit} min={SIZE_LIMITS.height.min} max={SIZE_LIMITS.height.max} error={hErr} />
                 </div>
-              </div>
-              <div className="mt-3 space-y-3">
-                <DimField label="Width" value={width} onChange={setWidth} unit={unit} min={SIZE_LIMITS.width.min} max={SIZE_LIMITS.width.max} error={wErr} />
-                <DimField label="Height" value={height} onChange={setHeight} unit={unit} min={SIZE_LIMITS.height.min} max={SIZE_LIMITS.height.max} error={hErr} />
-              </div>
-              <p className="mt-5 text-sm font-semibold text-[#3a3a3a]">Blind Name</p>
-              <div className="mt-2 grid grid-cols-2 gap-3">
-                <select value={room} onChange={(e) => setRoom(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2.5 text-sm bg-white outline-none focus:border-[#00473c]">
-                  <option value="">Select</option>
-                  {ROOM_TYPES.map((r) => (
-                    <option key={r}>{r}</option>
-                  ))}
-                </select>
-                <input
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value.slice(0, 40))}
-                  placeholder="Ex: West Wall"
-                  className="rounded-md border border-gray-300 px-3 py-2.5 text-sm outline-none focus:border-[#00473c]"
-                />
-              </div>
-            </Panel>
+                <div className="mt-4">
+                  <MeasureReassurance />
+                </div>
+                <p className="mt-6 text-sm font-medium">
+                  Name this blind <span className="font-normal text-muted">(optional — handy for multiple windows)</span>
+                </p>
+                <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+                  <select
+                    value={room}
+                    onChange={(e) => setRoom(e.target.value)}
+                    className="rounded-xl border border-line px-4 py-3 text-sm bg-white outline-none transition-colors hover:border-foreground/30 focus:border-primary"
+                    aria-label="Room"
+                  >
+                    <option value="">Room</option>
+                    {ROOM_TYPES.map((r) => (
+                      <option key={r}>{r}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value.slice(0, 40))}
+                    placeholder="e.g. West wall"
+                    aria-label="Window label"
+                    className="rounded-xl border border-line px-4 py-3 text-sm outline-none transition-colors hover:border-foreground/30 focus:border-primary placeholder:text-foreground/35"
+                  />
+                </div>
+              </Step>
+            </div>
 
-            <Panel title="Customize your blind" open={customizeOpen} onToggle={() => setCustomizeOpen((o) => !o)}>
-              <p className="text-sm font-semibold text-[#3a3a3a]">Blind Color</p>
-              <div className="mt-3 flex flex-wrap gap-3">
+            <Step n={2} title="Choose your colors" done>
+              <p className="text-sm">
+                <span className="text-muted">Fabric:</span> <span className="font-semibold">{color.name}</span>
+              </p>
+              <div className="mt-3 flex flex-wrap gap-4">
                 {BLIND_COLORS.map((c) => (
                   <Swatch key={c.id} hex={c.hex} name={c.name} active={color.id === c.id} onClick={() => pickColor(c)} />
                 ))}
               </div>
-
-              <p className="mt-6 text-sm font-semibold text-[#3a3a3a]">Frame Color</p>
-              <div className="mt-3 flex flex-wrap gap-3">
+              <p className="mt-6 text-sm">
+                <span className="text-muted">Frame:</span> <span className="font-semibold">{frame.name}</span>
+              </p>
+              <div className="mt-3 flex flex-wrap gap-4">
                 {FRAME_COLORS.map((c) => (
                   <Swatch key={c.id} hex={c.hex} name={c.name} active={frame.id === c.id} onClick={() => setFrame(c)} />
                 ))}
               </div>
+              <button onClick={addSamples} className="group mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                <Icon name="swatch" className="w-4 h-4" />
+                <span className="link-underline">Not sure? Order free fabric samples</span>
+              </button>
+            </Step>
 
-              <p id="opening-direction" className="mt-6 text-sm font-semibold text-[#3a3a3a]">
-                Opening Direction
-                {touched && !opening && <span className="ml-2 text-xs font-normal text-red-600">Please select an opening direction</span>}
-              </p>
-              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <Step n={3} title="Pick an opening direction" done={!!opening} id="opening-direction">
+              {touched && !opening && <p className="-mt-2 mb-3 text-xs text-red-600">Please choose how you’d like the blind to open.</p>}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {OPENINGS.map((o) => (
                   <button
                     key={o.id}
@@ -367,109 +414,142 @@ export default function Configurator() {
                       setOpening(o.id);
                       setOpeningPreview(o.image);
                     }}
-                    className={`rounded-md border-2 overflow-hidden text-left bg-white transition-colors ${opening === o.id ? 'border-[#00473c]' : 'border-gray-200 hover:border-gray-400'}`}
+                    className={`group rounded-2xl overflow-hidden text-left bg-white transition-all duration-300 ${
+                      opening === o.id ? 'ring-2 ring-primary shadow-md' : 'ring-1 ring-line hover:ring-foreground/30'
+                    }`}
                     aria-pressed={opening === o.id}
                   >
-                    <span className="relative block aspect-[4/3]">
-                      <Image src={o.image} alt="" fill sizes="160px" className="object-cover" />
+                    <span className="relative block aspect-[5/4] bg-linen overflow-hidden">
+                      <Image src={o.image} alt="" fill sizes="160px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     </span>
-                    <span className="block px-2 py-1.5 text-xs">
-                      <span className={`block font-semibold ${opening === o.id ? 'text-[#00473c]' : 'text-[#3a3a3a]'}`}>{o.name}</span>
-                      <span className="block text-gray-500">{o.price ? `+${formatUSD(o.price)}` : 'Included'}</span>
+                    <span className="block px-3 py-2.5 text-xs">
+                      <span className={`block font-semibold ${opening === o.id ? 'text-primary' : ''}`}>{o.name}</span>
+                      <span className="block text-muted">{o.price ? `+${formatUSD(o.price)}` : 'Included'}</span>
                     </span>
                   </button>
                 ))}
               </div>
-            </Panel>
+            </Step>
           </div>
 
-          <div ref={ctaRef}>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-sm text-gray-600">Quantity:</span>
-              <div className="flex items-center border border-gray-300 rounded-md">
-                <button className="px-2.5 py-1.5 text-gray-600" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity">
+          {/* Add to cart */}
+          <div ref={ctaRef} className="pt-7 border-t border-line">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center rounded-full border border-line h-14">
+                <button className="px-4 h-full text-muted hover:text-foreground" onClick={() => setQty((q) => Math.max(1, q - 1))} aria-label="Decrease quantity">
                   <Icon name="minus" className="w-4 h-4" />
                 </button>
-                <span className="w-8 text-center text-sm">{qty}</span>
-                <button className="px-2.5 py-1.5 text-gray-600" onClick={() => setQty((q) => Math.min(20, q + 1))} aria-label="Increase quantity">
+                <span className="w-6 text-center font-medium tabular-nums" aria-live="polite">
+                  {qty}
+                </span>
+                <button className="px-4 h-full text-muted hover:text-foreground" onClick={() => setQty((q) => Math.min(20, q + 1))} aria-label="Increase quantity">
                   <Icon name="plus" className="w-4 h-4" />
                 </button>
               </div>
+              <button
+                onClick={() => addToCart(false)}
+                className={`flex-1 h-14 rounded-full font-semibold text-white transition-all duration-300 flex items-center justify-center gap-2 ${
+                  added ? 'bg-primary-dark' : 'bg-primary hover:bg-primary-dark hover:shadow-[0_14px_30px_-12px_rgba(0,71,60,0.75)]'
+                }`}
+              >
+                {added ? (
+                  <>
+                    <Icon name="check" className="w-5 h-5" strokeWidth={2.4} /> Added to cart
+                  </>
+                ) : (
+                  <>
+                    Add to Cart <span className="opacity-60">·</span> <span className="tabular-nums">{formatUSD(displayed)}</span>
+                  </>
+                )}
+              </button>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => addToCart(false)} className="rounded-md bg-[#00473c] py-3 font-semibold text-white hover:bg-[#003830]">
-                Add to Cart
-              </button>
-              <button onClick={() => addToCart(true)} className="rounded-md border border-[#00473c] py-3 font-semibold text-[#00473c] hover:bg-[#00473c]/5">
-                Buy Now
-              </button>
+            <button
+              onClick={() => addToCart(true)}
+              className="mt-3 w-full h-14 rounded-full border border-foreground/15 font-semibold transition-colors hover:border-foreground/40"
+            >
+              Buy Now
+            </button>
+            {!ready && <p className="mt-3 text-center text-xs text-muted">Complete steps 1 and 3 to add your blind to the cart.</p>}
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+              {['visa', 'mastercard', 'amex', 'paypal', 'apple-pay', 'google-pay'].map((p) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img key={p} src={`/icons/payment/${p}.svg`} alt={p.replace('-', ' ')} className="h-6 w-auto" />
+              ))}
             </div>
           </div>
 
-          {/* Shop with confidence — live FitGuaranteeTrustBlock */}
-          <section className="mt-5 rounded-lg border border-gray-200 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Shop with confidence</p>
-            <div className="mt-3 grid sm:grid-cols-2 gap-3">
-              <Link href="/how-to-measure#guarantee" className="group flex items-start gap-3 rounded-lg bg-[#00473c]/5 border border-[#00473c]/10 p-3">
-                <IconTile><Icon name="shield" className="w-5 h-5" /></IconTile>
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold text-[#00473c]">{FIT_GUARANTEE.name} ›</span>
-                  <span className="block text-[13px] text-gray-500 leading-snug">Measured wrong? We&apos;ll make it right.*</span>
-                </span>
-              </Link>
-              {[
-                { icon: 'swatch' as const, t: 'Free Fabric Samples', d: 'See your color and fabric before ordering.' },
-                { icon: 'badge' as const, t: '5-Year Warranty', d: 'Quality you can depend on.' },
-                { icon: 'pin' as const, t: 'Made in Texas', d: 'Custom made for your windows.' },
-              ].map((c) => (
-                <div key={c.t} id={c.icon === 'swatch' ? 'samples' : undefined} className="flex items-start gap-3 rounded-lg border border-gray-100 p-3">
-                  <IconTile><Icon name={c.icon} className="w-5 h-5" /></IconTile>
-                  <span>
-                    <span className="block text-sm font-semibold text-[#3a3a3a]">{c.t}</span>
-                    <span className="block text-[13px] text-gray-500 leading-snug">{c.d}</span>
-                  </span>
-                </div>
-              ))}
+          {/* Shop with confidence */}
+          <div className="mt-8 grid sm:grid-cols-2 gap-3">
+            <Link href="/how-to-measure#guarantee" className="group flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4 transition-colors hover:bg-linen">
+              <IconTile>
+                <Icon name="shield" className="w-5 h-5" />
+              </IconTile>
+              <span>
+                <span className="block text-sm font-semibold">{FIT_GUARANTEE.name}</span>
+                <span className="block text-[13px] text-muted leading-snug">Measured wrong? We’ll make it right.*</span>
+              </span>
+            </Link>
+            <div id="samples" className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
+              <IconTile>
+                <Icon name="swatch" className="w-5 h-5" />
+              </IconTile>
+              <span className="flex-1">
+                <span className="block text-sm font-semibold">Free fabric samples</span>
+                <span className="block text-[13px] text-muted leading-snug">Up to 10, delivered free.</span>
+                <button onClick={addSamples} className="mt-1.5 text-[13px] font-semibold text-primary underline underline-offset-2">
+                  Add to cart
+                </button>
+              </span>
             </div>
-            <p className="mt-3 border-t border-gray-100 pt-3 text-[11px] text-gray-400">{FIT_GUARANTEE.disclaimer}</p>
-          </section>
-
-          <section className="mt-4 rounded-lg border border-gray-200 p-4">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              {['paypal', 'visa', 'mastercard', 'amex', 'apple-pay', 'google-pay'].map((p) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img key={p} src={`/icons/payment/${p}.svg`} alt={p} className="h-6 w-auto" />
-              ))}
+            <div className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
+              <IconTile>
+                <Icon name="badge" className="w-5 h-5" />
+              </IconTile>
+              <span>
+                <span className="block text-sm font-semibold">5-year warranty</span>
+                <span className="block text-[13px] text-muted leading-snug">On components and fabric.</span>
+              </span>
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              {[
-                { img: '/img/warranty.webp', t: 'Warranty', d: '5 Years Warranty' },
-                { img: '/img/easyAssembly.webp', t: 'Easy Assembly', d: 'Minimal no hassle assembly. All Fittings included' },
-                { img: '/img/review.png', t: '4.5/5 Stars', d: 'Rated Excellent on Trustpilot' },
-              ].map((b) => (
-                <div key={b.t} className="flex flex-col items-center text-center p-3 border border-gray-100 rounded-lg">
-                  <Image src={b.img} alt={b.t} width={64} height={40} className="w-10 h-10 object-contain mb-2" />
-                  <span className="text-xs font-semibold text-gray-800 leading-tight">{b.t}</span>
-                  <span className="text-xs text-gray-500 mt-0.5 leading-tight">{b.d}</span>
-                </div>
-              ))}
+            <div className="flex items-start gap-3.5 rounded-2xl ring-1 ring-line p-4">
+              <IconTile>
+                <Icon name="pin" className="w-5 h-5" />
+              </IconTile>
+              <span>
+                <span className="block text-sm font-semibold">Designed in Texas</span>
+                <span className="block text-[13px] text-muted leading-snug">Custom made for your windows.</span>
+              </span>
             </div>
-          </section>
+          </div>
+          <p className="mt-3 text-[11px] text-muted">{FIT_GUARANTEE.disclaimer}</p>
         </div>
       </div>
 
-      {/* Sticky bottom bar — same as live */}
-      <div className={`fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.05)] transition-transform duration-300 ${sticky ? 'translate-y-0' : 'translate-y-full'}`}>
+      {/* Sticky bottom bar */}
+      <div
+        className={`fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-xl border-t border-line shadow-[0_-8px_24px_-16px_rgba(13,23,20,0.3)] transition-transform duration-500 ${
+          sticky ? 'translate-y-0' : 'translate-y-full'
+        }`}
+        aria-hidden={!sticky}
+      >
         <div className="site-container py-3 flex items-center gap-4">
-          <div className="flex-1 min-w-0">
-            <p className="text-[11px] text-gray-500">{price !== null ? 'Your price' : 'From'}</p>
-            <PriceTag price={displayed} size="sm" />
+          <div className="hidden sm:flex items-center gap-3 flex-1 min-w-0">
+            <span className="relative w-11 h-11 rounded-lg overflow-hidden bg-linen shrink-0">
+              <Image src={GALLERY[color.image ?? 0].src} alt="" fill sizes="44px" className="object-contain" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold truncate">{PRODUCT.shortTitle}</span>
+              <span className="block text-xs text-muted">{price !== null ? sizeText() : 'Enter your size for an exact price'}</span>
+            </span>
           </div>
-          <button onClick={() => addToCart(false)} className="hidden sm:block rounded-md border border-[#00473c] px-8 py-2.5 text-sm font-semibold text-[#00473c]">
-            Add to Cart
-          </button>
-          <button onClick={() => addToCart(true)} className="rounded-md bg-[#00473c] px-8 py-2.5 text-sm font-semibold text-white">
-            Buy Now
+          <div className="flex-1 sm:flex-none">
+            <PriceTag price={displayed} size="sm" from={price === null} />
+          </div>
+          <button
+            onClick={() => (ready ? addToCart(true) : addToCart(false))}
+            tabIndex={sticky ? 0 : -1}
+            className="rounded-full bg-primary px-7 py-3 text-sm font-semibold text-white hover:bg-primary-dark transition-colors"
+          >
+            {ready ? 'Buy Now' : 'Finish Customizing'}
           </button>
         </div>
       </div>

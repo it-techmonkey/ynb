@@ -2,11 +2,15 @@ import { ButtonLink } from '@/components/ui';
 
 export default function NotFound() {
   return (
-    <section className="mx-auto max-w-xl px-4 py-28 text-center">
-      <p className="text-6xl font-bold text-[#00473c]/20">404</p>
-      <h1 className="mt-4 text-3xl font-bold text-black">Page not found</h1>
-      <div className="mt-8 flex justify-center">
-        <ButtonLink href="/shop">Customize Your Blinds</ButtonLink>
+    <section className="bg-linen">
+      <div className="mx-auto max-w-xl px-5 py-28 md:py-36 text-center">
+        <p className="heading-display text-8xl text-primary/20">404</p>
+        <h1 className="heading-display mt-4 text-5xl">This page went dark.</h1>
+        <p className="mt-4 text-muted">The page you’re looking for doesn’t exist or has moved.</p>
+        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+          <ButtonLink href="/shop" arrow>Customize Your Blind</ButtonLink>
+          <ButtonLink href="/" variant="outline">Back to Home</ButtonLink>
+        </div>
       </div>
     </section>
   );

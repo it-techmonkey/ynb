@@ -5,27 +5,18 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
 import { Icon, Logo } from './ui';
-import { PROMO } from '@/data/content';
-import { untilMidnight } from '@/lib/pricing';
+import { CONTACT, PROMO } from '@/data/content';
 
 const NAV = [
-  { href: '/shop', label: 'Shop the Blind' },
+  { href: '/shop', label: 'The Blind' },
   { href: '/#how-it-works', label: 'How It Works' },
-  { href: '/how-to-measure', label: 'Measure/fit guides' },
+  { href: '/how-to-measure', label: 'Measuring' },
   { href: '/#reviews', label: 'Reviews' },
   { href: '/faq', label: 'FAQ' },
 ];
 
-/** Live PromoBar, non-seasonal state. */
 function PromoBar() {
-  const [left, setLeft] = useState('');
   const [copied, setCopied] = useState(false);
-  useEffect(() => {
-    const tick = () => setLeft(untilMidnight());
-    tick();
-    const t = setInterval(tick, 1000);
-    return () => clearInterval(t);
-  }, []);
   const copy = () =>
     navigator.clipboard?.writeText(PROMO.code).then(() => {
       setCopied(true);
@@ -33,34 +24,27 @@ function PromoBar() {
     });
 
   return (
-    <div className="bg-[#00473c] text-white">
-      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-4 py-2 text-center sm:py-2.5 lg:flex-nowrap">
-        <span className="flex items-center gap-1.5 whitespace-nowrap text-xs font-bold tracking-wide sm:text-sm">
-          <Icon name="tag" className="h-3.5 w-3.5" strokeWidth={2} /> UP TO {PROMO.saleMaxPercent}% OFF
+    <div className="bg-ink text-white/85 text-[12.5px] sm:text-[13px]">
+      <div className="site-container flex h-10 items-center justify-center gap-x-5">
+        <span className="hidden md:inline">
+          <span className="font-semibold text-white">Up to {PROMO.saleMaxPercent}% off</span> made-to-measure blinds
         </span>
-        <span className="hidden text-white/40 sm:inline">|</span>
-        <span className="flex items-center gap-1.5 whitespace-nowrap text-xs sm:text-sm">
-          Extra {PROMO.codePercent}% Off with code
+        <span className="hidden md:inline h-3 w-px bg-white/20" aria-hidden="true" />
+        <span className="flex items-center gap-2">
+          Extra {PROMO.codePercent}% off with code
           <button
             type="button"
             onClick={copy}
-            className="inline-flex items-center gap-1 rounded border border-white/50 bg-white/10 px-1.5 py-0.5 text-xs font-bold tracking-wider hover:bg-white/20"
-            title="Click to copy"
+            className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-brass/70 px-2.5 py-0.5 font-semibold tracking-wider text-brass transition-colors hover:bg-brass/10"
+            aria-label={`Copy discount code ${PROMO.code}`}
           >
-            {copied ? 'Copied!' : PROMO.code}
-            <Icon name="copy" className="h-3 w-3" strokeWidth={2} />
+            {copied ? 'Copied' : PROMO.code}
+            <Icon name={copied ? 'check' : 'copy'} className="h-3 w-3" strokeWidth={2} />
           </button>
         </span>
-        <span className="hidden text-white/40 sm:inline">|</span>
-        <span className="hidden whitespace-nowrap text-xs sm:inline sm:text-sm">Today Only</span>
-        <span className="hidden text-white/40 sm:inline">|</span>
-        <span className="hidden whitespace-nowrap text-xs sm:inline sm:text-sm">While Supplies Last</span>
-        <span className="hidden text-white/40 sm:inline">|</span>
-        <span className="whitespace-nowrap text-xs sm:text-sm">
-          Sale ends in <span className="font-bold tabular-nums">{left || '--:--:--'}</span>
-        </span>
-        <Link href="/shop" className="ml-1 whitespace-nowrap rounded-full bg-white px-4 py-1 text-xs font-bold tracking-wide text-[#00473c] hover:bg-gray-100 sm:text-sm">
-          SHOP NOW
+        <span className="hidden lg:inline h-3 w-px bg-white/20" aria-hidden="true" />
+        <Link href="/shop#samples" className="hidden lg:inline link-underline">
+          Free fabric samples
         </Link>
       </div>
     </div>
@@ -75,47 +59,75 @@ export default function Header() {
 
   useEffect(() => setMenu(false), [pathname]);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  useEffect(() => {
+    document.body.style.overflow = menu ? 'hidden' : '';
+  }, [menu]);
 
   return (
     <>
       <PromoBar />
-      <header className={`sticky top-0 z-40 bg-white border-b transition-shadow ${scrolled ? 'border-transparent shadow-[0_2px_12px_rgba(0,0,0,0.06)]' : 'border-gray-200'}`}>
-        <div className="site-container h-14 md:h-16 flex items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
-            <button className="lg:hidden -ml-1 p-2" onClick={() => setMenu((m) => !m)} aria-label={menu ? 'Close menu' : 'Open menu'} aria-expanded={menu}>
+      <header
+        className={`sticky top-0 z-40 transition-[background-color,box-shadow,border-color] duration-300 border-b ${
+          scrolled || menu ? 'bg-white/90 backdrop-blur-xl border-line shadow-[0_6px_24px_-18px_rgba(13,23,20,0.35)]' : 'bg-white border-transparent'
+        }`}
+      >
+        <div className="site-container h-16 md:h-[72px] flex items-center justify-between gap-6">
+          <div className="flex items-center gap-1">
+            <button
+              className="lg:hidden -ml-2 p-2 text-foreground"
+              onClick={() => setMenu((m) => !m)}
+              aria-label={menu ? 'Close menu' : 'Open menu'}
+              aria-expanded={menu}
+            >
               <Icon name={menu ? 'close' : 'menu'} className="w-6 h-6" />
             </button>
             <Logo />
           </div>
 
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Main">
-            {NAV.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                className={`text-sm font-medium transition-colors hover:text-[#00473c] ${n.href === pathname ? 'text-[#00473c]' : 'text-[#3a3a3a]'}`}
-              >
-                {n.label}
-              </Link>
-            ))}
+          <nav className="hidden lg:flex items-center gap-1" aria-label="Main">
+            {NAV.map((n) => {
+              const active = n.href === pathname;
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  className={`relative rounded-full px-4 py-2 text-[14.5px] font-medium transition-colors ${
+                    active ? 'text-primary' : 'text-foreground/75 hover:text-foreground hover:bg-linen'
+                  }`}
+                >
+                  {n.label}
+                  {active && <span className="absolute left-1/2 -bottom-0.5 h-1 w-1 -translate-x-1/2 rounded-full bg-primary" />}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-1 md:gap-2">
+            <a
+              href={CONTACT.phoneHref}
+              className="hidden xl:inline-flex items-center gap-2 px-3 text-sm font-medium text-foreground/75 hover:text-foreground"
+            >
+              <Icon name="phone" className="w-4 h-4" /> {CONTACT.phone}
+            </a>
             <Link
               href="/shop"
-              className="hidden sm:inline-flex rounded-lg bg-[#00473c] px-4 py-2 text-sm font-semibold text-white hover:bg-[#003830] mr-2"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
             >
-              Customize Your Blinds
+              Shop Now
             </Link>
-            <button onClick={() => setOpen(true)} className="relative p-2 text-[#3a3a3a] hover:text-[#00473c]" aria-label={`Open cart, ${count} items`}>
+            <button
+              onClick={() => setOpen(true)}
+              className="relative p-2.5 -mr-2 text-foreground transition-colors hover:text-primary"
+              aria-label={`Open cart, ${count} items`}
+            >
               <Icon name="cart" className="w-6 h-6" />
               {count > 0 && (
-                <span className="absolute top-0.5 right-0 min-w-[18px] h-[18px] px-1 rounded-full bg-[#00473c] text-[11px] font-bold text-white flex items-center justify-center">
+                <span className="absolute top-1 right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-[11px] font-bold text-white flex items-center justify-center animate-fade-in">
                   {count}
                 </span>
               )}
@@ -123,16 +135,39 @@ export default function Header() {
           </div>
         </div>
 
-        <div className={`lg:hidden overflow-hidden transition-[max-height] duration-300 bg-white ${menu ? 'max-h-[420px] border-t border-gray-200' : 'max-h-0'}`}>
-          <nav className="px-4 py-2 flex flex-col" aria-label="Mobile">
-            {NAV.map((n) => (
-              <Link key={n.href} href={n.href} className="py-3.5 text-base font-medium border-b border-gray-100 last:border-0 text-[#3a3a3a]">
+        {/* Mobile menu */}
+        <div
+          className={`lg:hidden absolute inset-x-0 top-full h-[calc(100dvh-4rem)] bg-white border-t border-line transition-[opacity,transform] duration-300 ${
+            menu ? 'opacity-100 translate-y-0' : 'pointer-events-none opacity-0 -translate-y-2'
+          }`}
+          aria-hidden={!menu}
+        >
+          <nav className="site-container flex h-full flex-col pt-4 pb-16 overflow-y-auto" aria-label="Mobile">
+            {NAV.map((n, i) => (
+              <Link
+                key={n.href}
+                href={n.href}
+                tabIndex={menu ? 0 : -1}
+                className={`heading-display flex items-center justify-between border-b border-line py-4 text-[32px] text-foreground transition-all duration-500 ${
+                  menu ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-3'
+                }`}
+                style={{ transitionDelay: menu ? `${80 + i * 50}ms` : '0ms' }}
+              >
                 {n.label}
+                <Icon name="arrow" className="w-5 h-5 text-foreground/30" />
               </Link>
             ))}
-            <Link href="/shop" className="my-3 rounded-lg bg-[#00473c] py-3 text-center font-semibold text-white">
-              Customize Your Blinds
+            <Link href="/shop" tabIndex={menu ? 0 : -1} className="mt-8 rounded-full bg-primary py-4 text-center font-semibold text-white">
+              Customize Your Blind
             </Link>
+            <div className="mt-auto pt-8 space-y-2 text-sm text-muted">
+              <a href={CONTACT.phoneHref} tabIndex={menu ? 0 : -1} className="flex items-center gap-2">
+                <Icon name="phone" className="w-4 h-4" /> {CONTACT.phone}
+              </a>
+              <a href={`mailto:${CONTACT.email}`} tabIndex={menu ? 0 : -1} className="flex items-center gap-2">
+                <Icon name="mail" className="w-4 h-4" /> {CONTACT.email}
+              </a>
+            </div>
           </nav>
         </div>
       </header>

@@ -2,10 +2,16 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Configurator from '@/components/shop/Configurator';
 import ProductDetails from '@/components/shop/ProductDetails';
+import TrustMarquee from '@/components/sections/TrustMarquee';
+import Problem from '@/components/sections/Problem';
+import Features from '@/components/sections/Features';
 import Install from '@/components/sections/Install';
+import Reviews from '@/components/sections/Reviews';
 import Comparison from '@/components/sections/Comparison';
-import { KeyFeatureCards, SleepStat, Solution, Testimonials, ThreeInOne, WarrantyBand } from '@/components/sections/Story';
+import Guarantees from '@/components/sections/Guarantees';
+import FaqSection from '@/components/sections/FaqSection';
 import { PRODUCT } from '@/data/product';
+import { FAQS } from '@/data/content';
 
 export const metadata: Metadata = {
   title: `${PRODUCT.title} | Your Next Blinds`,
@@ -17,21 +23,21 @@ const TO_CONFIGURATOR = '#configure';
 export default function ShopPage() {
   return (
     <>
-      <nav className="site-container py-4 text-xs text-gray-500 truncate" aria-label="Breadcrumb">
-        <Link href="/" className="hover:text-[#00473c]">Home</Link>
-        <span className="mx-2">/</span>
-        <span className="text-gray-700">{PRODUCT.title}</span>
+      <nav className="site-container py-5 text-xs text-muted truncate" aria-label="Breadcrumb">
+        <Link href="/" className="hover:text-primary">Home</Link>
+        <span className="mx-2 opacity-50">/</span>
+        <span className="text-foreground/80">{PRODUCT.shortTitle}</span>
       </nav>
       <Configurator />
-      <KeyFeatureCards />
-      <WarrantyBand />
+      <TrustMarquee />
       <ProductDetails />
-      <Solution ctaHref={TO_CONFIGURATOR} />
-      <SleepStat ctaHref={TO_CONFIGURATOR} />
-      <ThreeInOne />
+      <Problem />
+      <Features ctaHref={TO_CONFIGURATOR} />
       <Install ctaHref={TO_CONFIGURATOR} />
-      <Testimonials />
+      <Reviews ctaHref={TO_CONFIGURATOR} />
       <Comparison ctaHref={TO_CONFIGURATOR} />
+      <Guarantees />
+      <FaqSection items={FAQS.slice(0, 6)} />
     </>
   );
 }

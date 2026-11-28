@@ -1,74 +1,72 @@
-import Image from 'next/image';
-import { ButtonLink, Icon, PriceTag } from '../ui';
-import BlackoutPhoto from '../sections/BlackoutPhoto';
-import { PRODUCT, cdn } from '@/data/product';
-import { SOLUTION } from '@/data/content';
+import Link from 'next/link';
+import type { CSSProperties } from 'react';
+import RoomSlider from '../sections/RoomSlider';
+import { ButtonLink, CheckDot, Icon, PriceTag, Stars } from '../ui';
+import { HERO, RATING } from '@/data/content';
 import { FROM_PRICE } from '@/lib/pricing';
 
-const BULLETS = [
-  '100% blackout performance — blocks outside light completely when closed',
-  'Drill-free installation — no tools, screws, or professional help required',
-  'Custom made to your exact window measurements for a perfect fit',
-];
+const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
 
 export default function Hero() {
   return (
-    <section className="bg-white">
-      <div className="site-container py-10 md:py-16 grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
+    <section className="relative overflow-hidden bg-linen">
+      {/* soft ambient light */}
+      <div
+        className="pointer-events-none absolute -top-40 -right-40 h-[620px] w-[620px] rounded-full bg-white/70 blur-3xl animate-glow"
+        aria-hidden="true"
+      />
+      <div className="site-container relative grid gap-12 lg:gap-16 py-12 md:py-16 lg:py-20 lg:grid-cols-[1.05fr_1fr] items-center">
         <div>
-          <p className="text-xs md:text-sm font-semibold uppercase tracking-widest text-[#00473c]">{PRODUCT.shortTitle}</p>
-          <h1 className="mt-4 text-4xl md:text-5xl lg:text-[56px] font-bold leading-[1.08] text-black">{SOLUTION.title}</h1>
-          <p className="mt-5 text-lg text-gray-700 font-medium">{SOLUTION.lead}</p>
-          <p className="mt-2 text-gray-600 leading-relaxed max-w-xl">{SOLUTION.body}</p>
+          <a href="#reviews" className="animate-fade-up inline-flex items-center gap-2.5 rounded-full bg-white px-3.5 py-1.5 shadow-sm ring-1 ring-line" style={d(0)}>
+            <Stars value={RATING.score} className="w-3.5 h-3.5" />
+            <span className="text-xs font-medium text-foreground/80">
+              <span className="font-semibold text-foreground">{RATING.score}/5</span> · {RATING.label}
+            </span>
+          </a>
 
-          <ul className="mt-6 space-y-2.5">
-            {BULLETS.map((b) => (
-              <li key={b} className="flex items-start gap-2.5 text-sm text-[#3a3a3a]">
-                <span className="mt-0.5 w-5 h-5 rounded-full bg-[#00473c] text-white flex items-center justify-center shrink-0">
-                  <Icon name="check" className="w-3 h-3" strokeWidth={3} />
-                </span>
-                {b}
-              </li>
-            ))}
-          </ul>
+          <h1 className="animate-fade-up heading-display mt-6 text-[46px] sm:text-6xl md:text-7xl lg:text-[58px] xl:text-[72px] text-foreground" style={d(80)}>
+            {HERO.title[0]}
+            <br />
+            <em className="text-primary">{HERO.title[1]}</em>
+          </h1>
 
-          <div className="mt-7">
+          <p className="animate-fade-up mt-6 text-lg md:text-xl text-muted leading-relaxed max-w-xl" style={d(160)}>
+            {HERO.body}
+          </p>
+
+          <div className="animate-fade-up mt-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6" style={d(240)}>
+            <ButtonLink href="/shop" arrow className="sm:px-9 py-4">
+              Customize Your Blind
+            </ButtonLink>
+            <Link href="/how-to-measure" className="group inline-flex items-center justify-center gap-2 text-[15px] font-semibold text-foreground">
+              <Icon name="ruler" className="w-4 h-4 text-primary" />
+              <span className="link-underline">How to measure</span>
+            </Link>
+          </div>
+
+          <div className="animate-fade-up mt-7" style={d(300)}>
             <PriceTag price={FROM_PRICE} from />
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <ButtonLink href="/shop" className="sm:min-w-[200px]">
-              Shop Now <Icon name="arrow" className="w-4 h-4" />
-            </ButtonLink>
-            <ButtonLink href="/how-to-measure" variant="outline">
-              <Icon name="ruler" className="w-4 h-4" /> How to Measure
-            </ButtonLink>
-          </div>
-
-          <div className="mt-8 pt-6 border-t border-gray-100 flex items-center gap-4">
-            <Image src="/img/review.png" alt="Trustpilot reviews" width={96} height={48} className="w-24 h-auto object-contain" />
-            <div className="text-sm leading-tight">
-              <p className="font-semibold text-gray-900">4.5/5 Stars</p>
-              <p className="text-gray-500">Rated Excellent on Trustpilot</p>
-            </div>
-          </div>
+          <ul className="animate-fade-up mt-8 pt-7 border-t border-sand flex flex-wrap gap-x-6 gap-y-3" style={d(360)}>
+            {HERO.points.map((p) => (
+              <li key={p} className="flex items-center gap-2 text-sm font-medium text-foreground/80">
+                <CheckDot /> {p}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <div className="relative">
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-100 shadow-lg">
-            <BlackoutPhoto />
-            <span className="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-md bg-[#00473c] px-3 py-1.5 text-xs font-semibold text-white shadow">
-              <Icon name="moon" className="w-3.5 h-3.5" /> After — 100% Blackout
+        <div className="animate-fade-up relative" style={d(200)}>
+          <RoomSlider className="w-full max-w-[600px] mx-auto lg:ml-auto lg:mr-0" />
+          <div className="hidden xl:flex absolute -left-10 top-[38%] items-center gap-3 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 shadow-xl ring-1 ring-line animate-fade-up" style={d(700)}>
+            <span className="w-9 h-9 rounded-full bg-primary-soft text-primary flex items-center justify-center">
+              <Icon name="tool" className="w-4.5 h-4.5" />
             </span>
-          </div>
-          <div className="absolute -bottom-6 -left-3 md:-left-8 w-36 md:w-44 rounded-xl bg-white p-1.5 shadow-xl border border-gray-100">
-            <div className="relative aspect-square rounded-lg overflow-hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={cdn('lifestyle1.png', 400)} alt="The same bedroom with the window uncovered" className="absolute inset-0 w-full h-full object-cover" />
-            </div>
-            <p className="px-1 pt-1.5 pb-0.5 text-xs font-semibold text-[#1a1a1a] flex items-center gap-1">
-              <Icon name="sun" className="w-3.5 h-3.5 text-amber-500" /> Before
-            </p>
+            <span className="text-xs leading-tight">
+              <span className="block font-semibold text-foreground">No drill. No damage.</span>
+              <span className="text-muted">Press-fits in minutes</span>
+            </span>
           </div>
         </div>
       </div>

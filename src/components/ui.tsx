@@ -1,39 +1,50 @@
 import Link from 'next/link';
-import type { ReactNode, SVGProps } from 'react';
+import type { CSSProperties, ReactNode, SVGProps } from 'react';
 import { PROMO } from '@/data/content';
 import { compareAt, formatUSD } from '@/lib/pricing';
 
 export type IconName =
   | 'check' | 'star' | 'cart' | 'close' | 'plus' | 'minus' | 'arrow' | 'chevron' | 'moon' | 'shield'
   | 'ruler' | 'truck' | 'play' | 'menu' | 'lock' | 'sun' | 'swatch' | 'badge' | 'pin' | 'info'
-  | 'search' | 'user' | 'copy' | 'tag' | 'arrows';
+  | 'search' | 'user' | 'copy' | 'tag' | 'arrows' | 'tool' | 'thermo' | 'child' | 'wave' | 'chat'
+  | 'phone' | 'mail' | 'download' | 'x-circle' | 'minus-circle';
 
 const PATHS: Record<IconName, ReactNode> = {
   check: <path d="M5 13l4 4L19 7" />,
   star: <path d="M12 3.6l2.5 5.3 5.8.7-4.3 4 1.1 5.8L12 16.6l-5.1 2.8 1.1-5.8-4.3-4 5.8-.7z" fill="currentColor" stroke="none" />,
-  cart: <><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.3 2.3c-.6.6-.2 1.7.7 1.7H17" /><circle cx="9" cy="20" r="1" /><circle cx="17" cy="20" r="1" /></>,
+  cart: <><path d="M6 7h12l-1 12.2a1 1 0 01-1 .8H8a1 1 0 01-1-.8L6 7z" /><path d="M9 7V6a3 3 0 016 0v1" /></>,
   close: <path d="M6 6l12 12M18 6L6 18" />,
   plus: <path d="M12 5v14M5 12h14" />,
   minus: <path d="M5 12h14" />,
   arrow: <path d="M5 12h14M13 6l6 6-6 6" />,
   chevron: <path d="M6 9l6 6 6-6" />,
-  moon: <path d="M21.75 15A9.72 9.72 0 0118 15.75c-5.39 0-9.75-4.37-9.75-9.75 0-1.33.27-2.6.75-3.75A9.75 9.75 0 003 11.25C3 16.64 7.37 21 12.75 21a9.75 9.75 0 009-6z" />,
-  shield: <><path d="M12 2.7A12 12 0 013.6 6 12 12 0 003 9.75c0 5.6 3.82 10.3 9 11.62 5.18-1.33 9-6.03 9-11.62 0-1.31-.21-2.57-.6-3.75h-.15c-3.2 0-6.1-1.25-8.25-3.3z" /><path d="M9 12.75L11.25 15 15 9.75" /></>,
+  moon: <path d="M20.5 14.6A8.5 8.5 0 019.4 3.5a8.5 8.5 0 1011.1 11.1z" />,
+  shield: <><path d="M12 3l7.5 3v5.6c0 4.4-3.1 8.2-7.5 9.4-4.4-1.2-7.5-5-7.5-9.4V6L12 3z" /><path d="M9 12.2l2.1 2.1L15 10.4" /></>,
   ruler: <><path d="M3 16.5L16.5 3 21 7.5 7.5 21z" /><path d="M7 12.5l1.5 1.5M10 9.5l1.5 1.5M13 6.5l1.5 1.5" /></>,
-  truck: <path d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.38A1.13 1.13 0 012.25 17.6V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.13c.62 0 1.13-.5 1.09-1.12a17.9 17.9 0 00-3.21-9.2 2.06 2.06 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.18v-.96c0-.57-.42-1.05-.99-1.1a48.6 48.6 0 00-10.02 0c-.57.05-.99.53-.99 1.1v7.64m12-6.68v6.68m0 4.5v-4.5m0 0h-12" />,
+  truck: <><path d="M3 7h11v9H3z" /><path d="M14 10h4l3 3v3h-7" /><circle cx="7" cy="17.5" r="1.6" /><circle cx="17.5" cy="17.5" r="1.6" /></>,
   play: <path d="M8 5.5v13l11-6.5z" fill="currentColor" />,
-  menu: <path d="M4 7h16M4 12h16M4 17h16" />,
+  menu: <path d="M4 7h16M4 12h16M4 17h10" />,
   lock: <><rect x="5" y="10.5" width="14" height="10" rx="2" /><path d="M8 10.5V7.5a4 4 0 018 0v3" /></>,
   sun: <><circle cx="12" cy="12" r="3.75" /><path d="M12 3v2.25M18.36 5.64l-1.59 1.59M21 12h-2.25M18.36 18.36l-1.59-1.59M12 18.75V21M7.23 16.77l-1.59 1.59M5.25 12H3M7.23 7.23L5.64 5.64" /></>,
   swatch: <><rect x="4" y="4" width="7" height="16" rx="1.5" /><path d="M11 8l5-3 3.5 6-8.5 5" /></>,
-  badge: <><path d="M9 12.75L11.25 15 15 9.75" /><path d="M12 2.25l2.2 1.6 2.7-.1.8 2.6 2.2 1.6-.8 2.6.8 2.6-2.2 1.6-.8 2.6-2.7-.1L12 21.75l-2.2-1.6-2.7.1-.8-2.6-2.2-1.6.8-2.6-.8-2.6 2.2-1.6.8-2.6 2.7.1z" /></>,
+  badge: <><circle cx="12" cy="9" r="5.5" /><path d="M9.5 9l1.8 1.8L14.6 7.5" /><path d="M8.5 13.8L7.5 21l4.5-2.2 4.5 2.2-1-7.2" /></>,
   pin: <><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>,
   info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
   search: <><circle cx="11" cy="11" r="6.5" /><path d="M20 20l-4.2-4.2" /></>,
   user: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5" /></>,
-  copy: <path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />,
-  tag: <path d="M7 7h.01M7 3h5.59a1 1 0 01.7.3l7.42 7.41a1 1 0 010 1.41l-8.59 8.59a1 1 0 01-1.41 0L3.3 13.3a1 1 0 01-.3-.71V7a4 4 0 014-4z" />,
+  copy: <><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M15 9V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7a2 2 0 002 2h3" /></>,
+  tag: <><path d="M3 12.6V4.5A1.5 1.5 0 014.5 3h8.1a1.5 1.5 0 011.06.44l7 7a1.5 1.5 0 010 2.12l-8.1 8.1a1.5 1.5 0 01-2.12 0l-7-7A1.5 1.5 0 013 12.6z" /><circle cx="8" cy="8" r="1.3" /></>,
   arrows: <path d="M8 7l-5 5 5 5M16 7l5 5-5 5" />,
+  tool: <path d="M14.7 6.3a4 4 0 00-5.4 5.2L3.8 17a1.6 1.6 0 002.3 2.3l5.5-5.5a4 4 0 005.2-5.4l-2.5 2.5-2.2-.4-.4-2.2 2.5-2.5z" />,
+  thermo: <><path d="M10 4.5a2 2 0 014 0v9.2a4 4 0 11-4 0V4.5z" /><path d="M12 10v6.5" /><path d="M17 6h3M17 9.5h2" /></>,
+  child: <><circle cx="12" cy="5" r="2.2" /><path d="M7 10.5l5-1.5 5 1.5M12 9v5.5M9.5 21l2.5-6.5 2.5 6.5" /></>,
+  wave: <><path d="M4 9.5v5M8 7v10M12 4.5v15M16 7v10M20 9.5v5" /></>,
+  chat: <><path d="M20 12a8 8 0 01-11.6 7.1L4 20l1-4.1A8 8 0 1120 12z" /><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" strokeWidth={2.4} /></>,
+  phone: <path d="M5 4h3.5l1.7 4.3-2.2 1.4a11 11 0 005.3 5.3l1.4-2.2L19 14.5V18a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z" />,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3.5 6.5L12 13l8.5-6.5" /></>,
+  download: <><path d="M12 4v11M7 10.5l5 5 5-5" /><path d="M5 19.5h14" /></>,
+  'x-circle': <><circle cx="12" cy="12" r="9" /><path d="M9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6" /></>,
+  'minus-circle': <><circle cx="12" cy="12" r="9" /><path d="M8.5 12h7" /></>,
 };
 
 export function Icon({ name, className = 'w-5 h-5', ...rest }: { name: IconName } & SVGProps<SVGSVGElement>) {
@@ -42,7 +53,7 @@ export function Icon({ name, className = 'w-5 h-5', ...rest }: { name: IconName 
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.75}
+      strokeWidth={1.6}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -54,13 +65,20 @@ export function Icon({ name, className = 'w-5 h-5', ...rest }: { name: IconName 
   );
 }
 
-/** Same star treatment as the live StarRating (brand green by default). */
-export function Stars({ value = 5, className = 'w-4 h-4', color = 'text-[#00473c]' }: { value?: number; className?: string; color?: string }) {
+export function Stars({ value = 5, className = 'w-4 h-4', color = 'text-brass' }: { value?: number; className?: string; color?: string }) {
   return (
-    <span className="inline-flex items-center gap-0.5" aria-label={`${value} out of 5 stars`}>
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Icon key={i} name="star" className={`${className} ${i <= Math.round(value) ? color : 'text-gray-300'}`} />
-      ))}
+    <span className="inline-flex items-center gap-0.5" role="img" aria-label={`${value} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((i) => {
+        const fill = Math.max(0, Math.min(1, value - (i - 1)));
+        return (
+          <span key={i} className={`relative inline-block ${className}`}>
+            <Icon name="star" className={`absolute inset-0 h-full w-full ${color} opacity-25`} />
+            <span className="absolute inset-y-0 left-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+              <Icon name="star" className={`${className} max-w-none ${color}`} />
+            </span>
+          </span>
+        );
+      })}
     </span>
   );
 }
@@ -70,10 +88,42 @@ export function Logo({ light = false }: { light?: boolean }) {
     <Link href="/" className="flex items-center gap-2 shrink-0" aria-label="Your Next Blinds home">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={light ? '/icons/logo-white.svg' : '/icons/logo.svg'} alt="" width={18} height={22} />
-      <span className={`font-medium text-lg md:text-xl leading-tight whitespace-nowrap ${light ? 'text-white' : 'text-[#00473c]'}`}>
+      <span className={`font-medium text-lg md:text-xl leading-tight whitespace-nowrap tracking-tight ${light ? 'text-white' : 'text-primary'}`}>
         Your <span className="italic">Next </span>Blinds
       </span>
     </Link>
+  );
+}
+
+/** Wraps content so it fades/slides in as it scrolls into view. */
+export function Reveal({
+  children,
+  delay = 0,
+  variant,
+  className = '',
+  as: Tag = 'div',
+  id,
+}: {
+  children: ReactNode;
+  delay?: number;
+  variant?: 'fade' | 'zoom';
+  className?: string;
+  as?: 'div' | 'li' | 'section' | 'figure' | 'article';
+  id?: string;
+}) {
+  return (
+    <Tag id={id} data-reveal={variant ?? ''} className={className} style={{ '--d': `${delay}ms` } as CSSProperties}>
+      {children}
+    </Tag>
+  );
+}
+
+export function Eyebrow({ children, light = false, className = '' }: { children: ReactNode; light?: boolean; className?: string }) {
+  return (
+    <p className={`inline-flex items-center gap-2 text-[11px] md:text-xs font-semibold uppercase tracking-[0.18em] ${light ? 'text-brass' : 'text-primary'} ${className}`}>
+      <span className={`h-px w-6 ${light ? 'bg-brass/60' : 'bg-primary/40'}`} aria-hidden="true" />
+      {children}
+    </p>
   );
 }
 
@@ -83,53 +133,61 @@ export function SectionHeading({
   center = false,
   light = false,
   eyebrow,
+  className = '',
+  as: H = 'h2',
 }: {
   title: ReactNode;
   sub?: ReactNode;
   center?: boolean;
   light?: boolean;
   eyebrow?: string;
+  className?: string;
+  as?: 'h1' | 'h2';
 }) {
   return (
-    <div className={`${center ? 'mx-auto text-center max-w-2xl' : 'max-w-xl'}`}>
-      {eyebrow && (
-        <p className={`text-xs font-semibold uppercase tracking-widest mb-3 ${light ? 'text-white/60' : 'text-[#00473c]'}`}>{eyebrow}</p>
-      )}
-      <h2 className={`text-3xl md:text-4xl font-bold leading-tight ${light ? 'text-white' : 'text-black'}`}>{title}</h2>
-      {sub && <p className={`mt-4 leading-relaxed ${light ? 'text-gray-300' : 'text-gray-600'}`}>{sub}</p>}
-    </div>
+    <Reveal className={`${center ? 'mx-auto text-center max-w-2xl flex flex-col items-center' : 'max-w-xl'} ${className}`}>
+      {eyebrow && <Eyebrow light={light} className="mb-4">{eyebrow}</Eyebrow>}
+      <H className={`heading-display text-[40px] md:text-5xl lg:text-[56px] ${light ? 'text-white' : 'text-foreground'}`}>{title}</H>
+      {sub && <p className={`mt-5 text-base md:text-lg leading-relaxed ${light ? 'text-white/65' : 'text-muted'}`}>{sub}</p>}
+    </Reveal>
   );
 }
+
+const BUTTON_STYLES = {
+  primary: 'bg-primary text-white hover:bg-primary-dark shadow-[0_8px_24px_-12px_rgba(0,71,60,0.7)] hover:shadow-[0_14px_30px_-12px_rgba(0,71,60,0.75)]',
+  outline: 'border border-foreground/15 text-foreground bg-white hover:border-foreground/40',
+  dark: 'bg-ink text-white hover:bg-ink-2',
+  light: 'bg-white text-ink hover:bg-linen',
+  outlineLight: 'border border-white/25 text-white hover:border-white/70 hover:bg-white/5',
+} as const;
+
+export type ButtonVariant = keyof typeof BUTTON_STYLES;
+
+export const buttonClass = (variant: ButtonVariant = 'primary', className = '') =>
+  `group inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-semibold transition-all duration-300 hover:-translate-y-px active:translate-y-0 ${BUTTON_STYLES[variant]} ${className}`;
 
 export function ButtonLink({
   href,
   children,
   variant = 'primary',
   className = '',
+  arrow = false,
 }: {
   href: string;
   children: ReactNode;
-  variant?: 'primary' | 'outline' | 'dark' | 'light' | 'outlineLight';
+  variant?: ButtonVariant;
   className?: string;
+  arrow?: boolean;
 }) {
-  const styles = {
-    primary: 'bg-[#00473c] text-white hover:bg-[#003830] shadow-sm',
-    outline: 'border border-[#00473c] text-[#00473c] bg-white hover:bg-[#00473c]/5',
-    dark: 'bg-[#1a1a1a] text-white hover:bg-gray-800',
-    light: 'bg-white text-black hover:bg-gray-100',
-    outlineLight: 'border border-white/40 text-white hover:border-white hover:bg-white/5',
-  }[variant];
   return (
-    <Link
-      href={href}
-      className={`inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-[15px] font-semibold transition-colors ${styles} ${className}`}
-    >
+    <Link href={href} className={buttonClass(variant, className)}>
       {children}
+      {arrow && <Icon name="arrow" className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />}
     </Link>
   );
 }
 
-/** Live price treatment: struck-through compare-at, price, "50% Off Flash Sale" badge. */
+/** Price with the struck-through compare-at and a "Save 50%" pill. */
 export function PriceTag({
   price,
   size = 'md',
@@ -141,21 +199,36 @@ export function PriceTag({
   from?: boolean;
   onDark?: boolean;
 }) {
-  const priceCls = { sm: 'text-base', md: 'text-xl md:text-2xl', lg: 'text-2xl md:text-3xl' }[size];
+  const priceCls = { sm: 'text-base', md: 'text-2xl', lg: 'text-3xl md:text-[34px]' }[size];
   return (
-    <span className="inline-flex flex-wrap items-baseline gap-2">
-      {from && <span className={`text-sm ${onDark ? 'text-white/70' : 'text-gray-500'}`}>From</span>}
-      <span className={`text-sm font-medium line-through ${onDark ? 'text-white/50' : 'text-gray-400'}`}>{formatUSD(compareAt(price))}</span>
-      <span className={`${priceCls} font-bold ${onDark ? 'text-white' : 'text-[#3a3a3a]'}`}>{formatUSD(price)}</span>
+    <span className="inline-flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+      {from && <span className={`text-sm ${onDark ? 'text-white/60' : 'text-muted'}`}>From</span>}
+      <span className={`${priceCls} font-semibold tracking-tight tabular-nums ${onDark ? 'text-white' : 'text-foreground'}`}>{formatUSD(price)}</span>
+      <span className={`text-sm line-through tabular-nums ${onDark ? 'text-white/45' : 'text-muted/70'}`}>{formatUSD(compareAt(price))}</span>
       {size !== 'sm' && (
-        <span className={`rounded-md px-2.5 py-1 text-xs font-semibold ${onDark ? 'bg-white text-[#00473c]' : 'bg-[#00473c] text-white'}`}>
-          {PROMO.flashSalePercent}% Off Flash Sale
+        <span className={`self-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${onDark ? 'bg-brass/20 text-brass' : 'bg-primary-soft text-primary'}`}>
+          Save {PROMO.flashSalePercent}%
         </span>
       )}
     </span>
   );
 }
 
-export function IconTile({ children }: { children: ReactNode }) {
-  return <span className="shrink-0 w-10 h-10 rounded-lg bg-[#00473c]/10 text-[#00473c] flex items-center justify-center">{children}</span>;
+export function IconTile({ children, light = false }: { children: ReactNode; light?: boolean }) {
+  return (
+    <span
+      className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center ${light ? 'bg-white/8 text-brass ring-1 ring-white/10' : 'bg-primary-soft text-primary'}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+/** Small round check used in bullet lists. */
+export function CheckDot({ light = false }: { light?: boolean }) {
+  return (
+    <span className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${light ? 'bg-white/10 text-brass' : 'bg-primary-soft text-primary'}`}>
+      <Icon name="check" className="w-3 h-3" strokeWidth={3} />
+    </span>
+  );
 }

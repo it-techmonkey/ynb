@@ -1,43 +1,59 @@
 @import "tailwindcss";
 
 /*
- * Same theme as the live Your Next Blinds site: white + #f8f9f8 surfaces,
- * #00473c brand green, #3a3a3a / #484848 text greys, #e1dcd4 warm border,
- * Inter body (Montserrat available for the logo wordmark).
+ * Your Next Blinds — design tokens.
+ * Calm, premium "sleep" palette: warm linen + white surfaces, deep night ink
+ * for dark sections, the brand green for every action, and a soft brass
+ * accent used sparingly (stars, small highlights).
  */
 :root {
   --background: #ffffff;
-  --surface: #f8f9f8;
-  --foreground: #1a1a1a;
+  --foreground: #121a17;
+  --ink: #0d1714;
+  --ink-2: #16231f;
   --primary: #00473c;
-  --primary-dark: #003830;
-  --gray-1: #3a3a3a;
-  --gray-2: #484848;
-  --border: #e1dcd4;
+  --primary-dark: #00332b;
+  --primary-soft: #e7f0ed;
+  --linen: #f6f3ee;
+  --sand: #ebe5da;
+  --line: #e7e2da;
+  --muted: #5d6662;
+  --brass: #c19a5b;
 }
 
 @theme inline {
   --color-background: var(--background);
-  --color-surface: var(--surface);
   --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
-  --color-gray-1: var(--gray-1);
-  --color-gray-2: var(--gray-2);
-  --color-border: var(--border);
-  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
-  --font-display: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  --color-primary-soft: var(--primary-soft);
+  --color-linen: var(--linen);
+  --color-sand: var(--sand);
+  --color-line: var(--line);
+  --color-muted: var(--muted);
+  --color-brass: var(--brass);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  --font-display: var(--font-serif), Georgia, 'Times New Roman', serif;
+  --ease-out-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 90px;
+  scroll-padding-top: 96px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--primary);
+  color: #fff;
 }
 
 /* One container for every section so all edges line up with the header. */
@@ -46,18 +62,17 @@ body {
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 @media (min-width: 768px) {
-  .site-container { padding-left: 1.5rem; padding-right: 1.5rem; }
-}
-@media (min-width: 1024px) {
   .site-container { padding-left: 2rem; padding-right: 2rem; }
+}
+@media (min-width: 1280px) {
+  .site-container { padding-left: 2.5rem; padding-right: 2.5rem; }
 }
 
 h1, h2, h3 {
-  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 
@@ -65,21 +80,131 @@ p {
   text-wrap: pretty;
 }
 
+/* Serif display headings: Instrument Serif ships one weight, so size and
+   tight tracking do the work. <em> inside a heading switches to the italic. */
+.heading-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+}
+.heading-display em {
+  font-style: italic;
+}
+
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+summary:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* ---------------------------------------------------------------------------
+ * Motion
+ * ------------------------------------------------------------------------- */
+
+/* Page-load entrance, used above the fold (hero) where scroll reveal can't run. */
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-up {
+  animation: fade-up 0.9s var(--ease-out-soft) both;
+  animation-delay: var(--d, 0ms);
+}
+.animate-fade-in {
+  animation: fade-in 1.1s ease-out both;
+  animation-delay: var(--d, 0ms);
+}
+
+/*
+ * Scroll reveal. RevealObserver sets html[data-reveal-ready] and adds
+ * [data-in] to each [data-reveal] element as it enters the viewport. Without
+ * JS nothing is hidden.
+ */
+[data-reveal] {
+  transition:
+    opacity 0.9s var(--ease-out-soft),
+    transform 0.9s var(--ease-out-soft);
+  transition-delay: var(--d, 0ms);
+}
+html[data-reveal-ready] [data-reveal]:not([data-in]) {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+html[data-reveal-ready] [data-reveal='fade']:not([data-in]) {
+  transform: none;
+}
+html[data-reveal-ready] [data-reveal='zoom']:not([data-in]) {
+  transform: scale(0.965);
+}
+
+/* Infinite trust strip. The track holds two copies of the list. */
+@keyframes marquee {
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* Slow "breathing" glow behind dark hero/CTA media. */
+@keyframes glow {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.06); }
+}
+.animate-glow {
+  animation: glow 9s ease-in-out infinite;
+}
+
+/* Gentle pulse for the "drag" hint on the room slider handle. */
+@keyframes nudge {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(calc(-50% - 6px), -50%); }
+}
+.animate-nudge {
+  animation: nudge 1.6s ease-in-out infinite;
+}
+
+/* Animated underline for text links. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.35s var(--ease-out-soft);
+}
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  .marquee-track { animation: none !important; }
+  html[data-reveal-ready] [data-reveal]:not([data-in]) {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -21,35 +21,44 @@ export default function CartDrawer() {
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
-      <div className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`} onClick={() => setOpen(false)} />
+      <div
+        className={`absolute inset-0 bg-ink/50 backdrop-blur-[2px] transition-opacity duration-300 ${open ? 'opacity-100' : 'opacity-0'}`}
+        onClick={() => setOpen(false)}
+      />
       <aside
-        className={`absolute right-0 top-0 h-full w-full max-w-[420px] bg-white shadow-2xl flex flex-col transition-transform duration-300 ${open ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`absolute right-0 top-0 h-full w-full max-w-[440px] bg-white shadow-2xl flex flex-col transition-transform duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] ${
+          open ? 'translate-x-0' : 'translate-x-full'
+        }`}
         role="dialog"
+        aria-modal="true"
         aria-label="Your cart"
       >
-        <div className="flex items-center justify-between px-5 h-16 border-b border-gray-200">
-          <p className="text-lg font-semibold text-[#1a1a1a]">
-            Your Cart <span className="text-gray-500 font-normal text-base">({count})</span>
+        <div className="flex items-center justify-between px-6 h-[72px] border-b border-line">
+          <p className="heading-display text-[28px]">
+            Your cart <span className="font-sans text-base text-muted">({count})</span>
           </p>
-          <button onClick={() => setOpen(false)} className="p-2 -mr-2 text-gray-500 hover:text-black" aria-label="Close cart">
+          <button onClick={() => setOpen(false)} className="p-2 -mr-2 rounded-full text-muted hover:text-foreground hover:bg-linen" aria-label="Close cart">
             <Icon name="close" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-5 py-4">
+        <div className="flex-1 overflow-y-auto px-6 py-5">
           {items.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-center gap-3 py-16">
-              <Icon name="cart" className="w-10 h-10 text-gray-300" />
-              <p className="text-lg font-semibold text-[#1a1a1a]">Your cart is empty</p>
-              <Link href="/shop" onClick={() => setOpen(false)} className="mt-2 rounded-lg bg-[#00473c] px-6 py-3 font-semibold text-white">
-                Customize Your Blinds
+            <div className="h-full flex flex-col items-center justify-center text-center py-16">
+              <span className="w-16 h-16 rounded-full bg-linen flex items-center justify-center text-primary">
+                <Icon name="moon" className="w-7 h-7" />
+              </span>
+              <p className="mt-5 heading-display text-3xl">Your cart is empty</p>
+              <p className="mt-2 text-sm text-muted max-w-[260px]">Build a blind made to your exact window size — it only takes a minute.</p>
+              <Link href="/shop" onClick={() => setOpen(false)} className="mt-6 rounded-full bg-primary px-7 py-3.5 font-semibold text-white hover:bg-primary-dark">
+                Customize Your Blind
               </Link>
             </div>
           ) : (
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-4">
               {items.map((item) => (
-                <li key={item.id} className="flex gap-4 rounded-lg border border-gray-200 p-3">
-                  <div className="w-20 h-20 shrink-0 rounded-md overflow-hidden bg-gray-50 border border-gray-100">
+                <li key={item.id} className="flex gap-4 pb-4 border-b border-line last:border-0 animate-fade-up">
+                  <div className="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-linen">
                     {item.image ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.image} alt="" className="w-full h-full object-contain" />
@@ -62,30 +71,30 @@ export default function CartDrawer() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between gap-2">
-                      <p className="text-sm font-semibold leading-snug text-[#1a1a1a]">{item.title}</p>
-                      <p className="text-sm font-semibold whitespace-nowrap">{item.unitPrice === 0 ? 'Free' : formatUSD(item.unitPrice * item.qty)}</p>
+                    <div className="flex justify-between gap-3">
+                      <p className="text-sm font-semibold leading-snug">{item.title}</p>
+                      <p className="text-sm font-semibold whitespace-nowrap tabular-nums">{item.unitPrice === 0 ? 'Free' : formatUSD(item.unitPrice * item.qty)}</p>
                     </div>
-                    <ul className="mt-1 text-xs text-gray-500 leading-relaxed">
+                    <ul className="mt-1 text-xs text-muted leading-relaxed">
                       {item.details.map((d) => (
                         <li key={d}>{d}</li>
                       ))}
                     </ul>
-                    <div className="mt-2 flex items-center justify-between">
+                    <div className="mt-3 flex items-center justify-between">
                       {item.kind === 'blind' ? (
-                        <div className="flex items-center rounded-md border border-gray-200">
-                          <button className="p-1.5" onClick={() => setQty(item.id, item.qty - 1)} aria-label="Decrease quantity">
+                        <div className="flex items-center rounded-full border border-line">
+                          <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty - 1)} aria-label="Decrease quantity">
                             <Icon name="minus" className="w-3.5 h-3.5" />
                           </button>
-                          <span className="w-6 text-center text-sm">{item.qty}</span>
-                          <button className="p-1.5" onClick={() => setQty(item.id, item.qty + 1)} aria-label="Increase quantity">
+                          <span className="w-6 text-center text-sm tabular-nums">{item.qty}</span>
+                          <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty + 1)} aria-label="Increase quantity">
                             <Icon name="plus" className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ) : (
                         <span />
                       )}
-                      <button onClick={() => remove(item.id)} className="text-xs text-gray-500 underline hover:text-black">
+                      <button onClick={() => remove(item.id)} className="text-xs text-muted underline underline-offset-2 hover:text-foreground">
                         Remove
                       </button>
                     </div>
@@ -96,15 +105,17 @@ export default function CartDrawer() {
           )}
 
           {items.length > 0 && !hasSample && (
-            <div className="mt-4 rounded-lg bg-[#00473c]/5 border border-[#00473c]/15 p-4 flex items-center gap-3">
-              <Icon name="swatch" className="w-5 h-5 text-[#00473c] shrink-0" />
+            <div className="mt-2 rounded-2xl bg-linen p-4 flex items-center gap-3">
+              <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shrink-0">
+                <Icon name="swatch" className="w-5 h-5" />
+              </span>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-[#3a3a3a]">Free Fabric Samples</p>
-                <p className="text-xs text-gray-600">Up to 10, delivered free</p>
+                <p className="text-sm font-semibold">Add free fabric samples</p>
+                <p className="text-xs text-muted">See every color at home — on us.</p>
               </div>
               <button
                 onClick={() => add({ kind: 'sample', title: 'Free Fabric Samples', details: ['White, Cream, Graphite, Blue'], unitPrice: 0 })}
-                className="rounded-full border border-[#00473c] px-3 py-1 text-xs font-semibold text-[#00473c] hover:bg-[#00473c] hover:text-white"
+                className="rounded-full border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
               >
                 Add
               </button>
@@ -113,22 +124,29 @@ export default function CartDrawer() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-gray-200 px-5 pt-4 pb-5">
-            <div className="rounded-lg border border-dashed border-[#00473c]/40 px-3 py-2 text-xs text-[#00473c] mb-3">
-              Use code <span className="font-bold">{PROMO.code}</span> at checkout for an extra {PROMO.codePercent}% off.
+          <div className="border-t border-line px-6 pt-5 pb-6 bg-white">
+            <div className="flex items-center gap-2 rounded-xl border border-dashed border-primary/30 bg-primary-soft/50 px-3 py-2.5 text-xs text-primary mb-4">
+              <Icon name="tag" className="w-4 h-4 shrink-0" />
+              <span>
+                Use code <span className="font-bold tracking-wide">{PROMO.code}</span> at checkout for an extra {PROMO.codePercent}% off.
+              </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-bold text-lg text-[#1a1a1a]">{formatUSD(subtotal)}</span>
+            <div className="flex justify-between items-baseline">
+              <span className="text-muted">Subtotal</span>
+              <span className="font-semibold text-xl tabular-nums">{formatUSD(subtotal)}</span>
             </div>
-            <p className="text-xs text-gray-500 mt-1">Shipping and taxes calculated at checkout.</p>
+            <p className="text-xs text-muted mt-1">Shipping and taxes calculated at checkout.</p>
             <button
               onClick={() => setNotice(true)}
-              className="mt-4 w-full rounded-lg bg-[#00473c] py-3.5 font-semibold text-white hover:bg-[#003830] flex items-center justify-center gap-2"
+              className="mt-4 w-full rounded-full bg-primary py-4 font-semibold text-white transition-colors hover:bg-primary-dark flex items-center justify-center gap-2"
             >
-              <Icon name="lock" className="w-4 h-4" /> Checkout
+              <Icon name="lock" className="w-4 h-4" /> Secure Checkout
             </button>
-            {notice && <p className="mt-2 text-center text-xs text-[#00473c] bg-[#00473c]/5 rounded py-2">Design preview — checkout connects to Shopify at launch.</p>}
+            {notice && <p className="mt-2 text-center text-xs text-primary bg-primary-soft rounded-lg py-2">Design preview — checkout connects to Shopify at launch.</p>}
+            <div className="mt-4 flex items-center justify-center gap-4 text-[11px] text-muted">
+              <span className="flex items-center gap-1"><Icon name="shield" className="w-3.5 h-3.5 text-primary" /> Fit Guarantee</span>
+              <span className="flex items-center gap-1"><Icon name="badge" className="w-3.5 h-3.5 text-primary" /> 5-year warranty</span>
+            </div>
           </div>
         )}
       </aside>

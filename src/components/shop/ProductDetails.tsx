@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
-import { Icon } from '../ui';
+import { Icon, Reveal, SectionHeading } from '../ui';
 import {
   CHILD_SAFETY,
   EASY_MAINTENANCE,
@@ -13,10 +13,10 @@ import {
 } from '@/data/content';
 
 const List = ({ items }: { items: string[] }) => (
-  <ul className="space-y-2">
+  <ul className="space-y-2.5">
     {items.map((i) => (
-      <li key={i} className="flex gap-3 text-sm text-[#484848]">
-        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#00473c] shrink-0" />
+      <li key={i} className="flex gap-3 text-[15px] text-muted">
+        <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
         {i}
       </li>
     ))}
@@ -25,13 +25,13 @@ const List = ({ items }: { items: string[] }) => (
 
 const SECTIONS: { title: string; body: ReactNode }[] = [
   {
-    title: 'Product Details',
+    title: 'Product details',
     body: (
-      <div className="space-y-4 text-sm text-[#484848] leading-relaxed">
+      <div className="space-y-4 text-[15px] text-muted leading-relaxed">
         {PRODUCT_DETAILS.map((p) => (
           <p key={p}>{p}</p>
         ))}
-        <p className="font-semibold text-[#1a1a1a] pt-2">Key Features</p>
+        <p className="font-semibold text-foreground pt-2">Key features</p>
         <List items={KEY_FEATURES} />
       </div>
     ),
@@ -41,21 +41,21 @@ const SECTIONS: { title: string; body: ReactNode }[] = [
     body: (
       <dl className="grid sm:grid-cols-2 gap-x-10">
         {SPECIFICATIONS.map((s) => (
-          <div key={s.label} className="flex justify-between gap-6 py-3 border-b border-gray-100 text-sm">
-            <dt className="text-gray-500">{s.label}</dt>
-            <dd className="font-medium text-[#1a1a1a] text-right">{s.value}</dd>
+          <div key={s.label} className="flex justify-between gap-6 py-3 border-b border-line text-sm">
+            <dt className="text-muted">{s.label}</dt>
+            <dd className="font-medium text-right">{s.value}</dd>
           </div>
         ))}
       </dl>
     ),
   },
-  { title: 'Perfect For', body: <List items={PERFECT_FOR} /> },
-  { title: 'What’s in the Box?', body: <List items={WHATS_IN_THE_BOX} /> },
-  { title: 'Easy Maintenance', body: <List items={EASY_MAINTENANCE} /> },
+  { title: 'Perfect for', body: <List items={PERFECT_FOR} /> },
+  { title: 'What’s in the box', body: <List items={WHATS_IN_THE_BOX} /> },
+  { title: 'Care & maintenance', body: <List items={EASY_MAINTENANCE} /> },
   {
-    title: 'Child Safety',
+    title: 'Child safety',
     body: (
-      <div className="space-y-3 text-sm text-[#484848] leading-relaxed">
+      <div className="space-y-3 text-[15px] text-muted leading-relaxed">
         {CHILD_SAFETY.map((p) => (
           <p key={p}>{p}</p>
         ))}
@@ -64,24 +64,38 @@ const SECTIONS: { title: string; body: ReactNode }[] = [
   },
 ];
 
-/** Live CategoryInfoSection accordions. */
 export default function ProductDetails() {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section id="details" className="bg-white py-12 md:py-16">
-      <div className="site-container grid gap-8 lg:grid-cols-[1fr_2.2fr]">
-        <h2 className="text-2xl md:text-3xl font-bold text-black">Product Information</h2>
-        <ul className="divide-y divide-gray-200 border-y border-gray-200">
-          {SECTIONS.map((s, i) => (
-            <li key={s.title}>
-              <button onClick={() => setOpen(open === i ? null : i)} className="w-full flex items-center justify-between py-4 text-left" aria-expanded={open === i}>
-                <span className="font-semibold text-[#1a1a1a]">{s.title}</span>
-                <Icon name={open === i ? 'minus' : 'plus'} className="w-4 h-4 text-gray-500" />
-              </button>
-              {open === i && <div className="pb-6">{s.body}</div>}
-            </li>
-          ))}
-        </ul>
+    <section id="details" className="bg-white py-20 md:py-28">
+      <div className="site-container grid gap-10 lg:grid-cols-[1fr_1.8fr] lg:gap-20">
+        <SectionHeading eyebrow="The details" title="Everything you need to know." className="lg:sticky lg:top-28 lg:self-start" />
+        <Reveal delay={80}>
+          <ul className="divide-y divide-line border-y border-line">
+            {SECTIONS.map((s, i) => {
+              const isOpen = open === i;
+              return (
+                <li key={s.title}>
+                  <button onClick={() => setOpen(isOpen ? null : i)} className="group w-full flex items-center justify-between py-5 text-left" aria-expanded={isOpen}>
+                    <span className={`text-lg font-medium transition-colors ${isOpen ? 'text-primary' : 'group-hover:text-primary'}`}>{s.title}</span>
+                    <span
+                      className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isOpen ? 'bg-primary text-white rotate-45' : 'bg-linen group-hover:bg-sand'
+                      }`}
+                    >
+                      <Icon name="plus" className="w-4 h-4" strokeWidth={2} />
+                    </span>
+                  </button>
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-400 ease-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                    <div className="overflow-hidden">
+                      <div className="pb-7">{s.body}</div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </Reveal>
       </div>
     </section>
   );
