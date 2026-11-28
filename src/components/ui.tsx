@@ -5,7 +5,7 @@ import { compareAt, formatUSD } from '@/lib/pricing';
 
 export type IconName =
   | 'check' | 'star' | 'cart' | 'close' | 'plus' | 'minus' | 'arrow' | 'chevron' | 'moon' | 'shield'
-  | 'ruler' | 'truck' | 'play' | 'menu' | 'lock' | 'sun' | 'swatch' | 'badge' | 'pin' | 'info'
+  | 'ruler' | 'truck' | 'play' | 'menu' | 'lock' | 'sun' | 'badge' | 'pin' | 'info'
   | 'search' | 'user' | 'copy' | 'tag' | 'arrows' | 'tool' | 'thermo' | 'child' | 'wave' | 'chat'
   | 'phone' | 'mail' | 'download' | 'x-circle' | 'minus-circle';
 
@@ -26,7 +26,6 @@ const PATHS: Record<IconName, ReactNode> = {
   menu: <path d="M4 7h16M4 12h16M4 17h10" />,
   lock: <><rect x="5" y="10.5" width="14" height="10" rx="2" /><path d="M8 10.5V7.5a4 4 0 018 0v3" /></>,
   sun: <><circle cx="12" cy="12" r="3.75" /><path d="M12 3v2.25M18.36 5.64l-1.59 1.59M21 12h-2.25M18.36 18.36l-1.59-1.59M12 18.75V21M7.23 16.77l-1.59 1.59M5.25 12H3M7.23 7.23L5.64 5.64" /></>,
-  swatch: <><rect x="4" y="4" width="7" height="16" rx="1.5" /><path d="M11 8l5-3 3.5 6-8.5 5" /></>,
   badge: <><circle cx="12" cy="9" r="5.5" /><path d="M9.5 9l1.8 1.8L14.6 7.5" /><path d="M8.5 13.8L7.5 21l4.5-2.2 4.5 2.2-1-7.2" /></>,
   pin: <><path d="M12 21s-7-6.2-7-11.5a7 7 0 0114 0C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>,
   info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,

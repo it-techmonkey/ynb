@@ -25,11 +25,11 @@ function Step({ n, title, done, aside, children, id }: { n: number; title: strin
       <div className="flex items-center justify-between gap-4">
         <h2 className="flex items-center gap-3 text-lg font-semibold tracking-tight">
           <span
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm transition-colors duration-300 ${
-              done ? 'bg-primary text-white' : 'bg-linen text-foreground ring-1 ring-line'
+            className={`w-7 h-7 rounded-full flex items-center justify-center text-[13px] font-semibold transition-colors ${
+              done ? 'bg-primary text-white' : 'text-foreground ring-1 ring-foreground/25'
             }`}
           >
-            {done ? <Icon name="check" className="w-4 h-4" strokeWidth={2.6} /> : n}
+            {done ? <Icon name="check" className="w-3.5 h-3.5" strokeWidth={2.8} /> : n}
           </span>
           {title}
         </h2>
@@ -105,13 +105,13 @@ function Swatch({ hex, name, active, onClick }: { hex: string; name: string; act
   return (
     <button onClick={onClick} className="group flex flex-col items-center gap-2" aria-pressed={active} aria-label={name}>
       <span
-        className={`w-14 h-14 rounded-full p-1 transition-all duration-300 ${
-          active ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-line group-hover:ring-foreground/40'
+        className={`w-12 h-12 rounded-full p-1 transition-shadow ${
+          active ? 'ring-2 ring-foreground' : 'ring-1 ring-line group-hover:ring-foreground/40'
         }`}
       >
-        <span className="block w-full h-full rounded-full border border-black/10 transition-transform duration-300 group-hover:scale-95" style={{ background: hex }} />
+        <span className="block w-full h-full rounded-full border border-black/10" style={{ background: hex }} />
       </span>
-      <span className={`text-xs ${active ? 'font-semibold text-primary' : 'text-muted'}`}>{name}</span>
+      <span className={`text-xs ${active ? 'font-semibold text-foreground' : 'text-muted'}`}>{name}</span>
     </button>
   );
 }
@@ -133,6 +133,7 @@ export default function Configurator() {
   const [dispatch, setDispatch] = useState('');
   const [sticky, setSticky] = useState(false);
   const [added, setAdded] = useState(false);
+  const [naming, setNaming] = useState(false);
   const ctaRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const thumbs = useRef<HTMLDivElement>(null);
@@ -150,9 +151,13 @@ export default function Configurator() {
     const strip = thumbs.current;
     const t = strip?.children[slide] as HTMLElement | undefined;
     if (!strip || !t) return;
-    const left = t.offsetLeft; // strip is position:relative, so this is strip-relative
-    if (left < strip.scrollLeft || left + t.offsetWidth > strip.scrollLeft + strip.clientWidth) {
-      strip.scrollTo({ left: left - 8, behavior: 'smooth' });
+    // The strip is position:relative, so offsets are strip-relative.
+    if (strip.scrollHeight > strip.clientHeight + 1) {
+      const top = t.offsetTop;
+      if (top < strip.scrollTop || top + t.offsetHeight > strip.scrollTop + strip.clientHeight) strip.scrollTo({ top: top - 4, behavior: 'smooth' });
+    } else {
+      const left = t.offsetLeft;
+      if (left < strip.scrollLeft || left + t.offsetWidth > strip.scrollLeft + strip.clientWidth) strip.scrollTo({ left: left - 4, behavior: 'smooth' });
     }
   }, [slide]);
 
@@ -216,8 +221,6 @@ export default function Configurator() {
     if (buyNow) setOpen(true);
   };
 
-  const addSamples = () => add({ kind: 'sample', title: 'Free Fabric Samples', details: ['White, Cream, Graphite, Blue'], unitPrice: 0 });
-
   const pickColor = (c: (typeof BLIND_COLORS)[number]) => {
     setColor(c);
     setOpeningPreview(null);
@@ -226,16 +229,36 @@ export default function Configurator() {
 
   return (
     <>
-      <div id="configure" className="site-container pt-2 pb-16 md:pb-24 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-        {/* Gallery */}
-        <div className="lg:sticky lg:top-24 lg:self-start min-w-0">
-          <div className="group relative aspect-square rounded-lg overflow-hidden bg-linen">
+      <div id="configure" className="site-container pt-2 pb-16 md:pb-24 grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:gap-14 xl:gap-20">
+        {/* Gallery: thumbnails beside the image on desktop, below it on mobile */}
+        <div className="lg:sticky lg:top-24 lg:self-start min-w-0 flex flex-col-reverse lg:grid lg:grid-cols-[72px_1fr] gap-3">
+          <div className="relative min-w-0">
+            <div
+              ref={thumbs}
+              className="relative flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto scrollbar-hide p-0.5 lg:absolute lg:inset-0"
+            >
+              {GALLERY.map((g, i) => (
+                <button
+                  key={g.src}
+                  onClick={() => go(i)}
+                  className={`relative w-16 h-16 lg:w-full lg:h-auto lg:aspect-square shrink-0 rounded-md overflow-hidden bg-white border transition-colors ${
+                    !openingPreview && slide === i ? 'border-foreground' : 'border-line hover:border-foreground/40'
+                  }`}
+                  aria-label={`Show ${g.alt}`}
+                  aria-current={!openingPreview && slide === i}
+                >
+                  <Image src={g.src} alt="" fill sizes="72px" className="object-contain" />
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="group relative aspect-square rounded-lg overflow-hidden bg-white border border-line">
             <Image
               key={mainSrc}
               src={mainSrc}
               alt={mainAlt}
               fill
-              sizes="(min-width: 1024px) 55vw, 100vw"
+              sizes="(min-width: 1024px) 50vw, 100vw"
               preload={slide === 0 && !openingPreview}
               className="object-contain animate-fade-in"
             />
@@ -253,36 +276,34 @@ export default function Configurator() {
             >
               <Icon name="arrow" className="w-4 h-4" />
             </button>
-            <span className="absolute bottom-4 right-4 rounded bg-white/90 px-2 py-0.5 text-xs text-foreground/70 tabular-nums">
+            <span className="absolute bottom-3 right-3 rounded bg-white/90 px-2 py-0.5 text-xs text-foreground/60 tabular-nums">
               {openingPreview ? 'Opening preview' : `${slide + 1} / ${GALLERY.length}`}
             </span>
-          </div>
-          <div ref={thumbs} className="relative mt-2 flex gap-2.5 overflow-x-auto scrollbar-hide p-1 -mx-1">
-            {GALLERY.map((g, i) => (
-              <button
-                key={g.src}
-                onClick={() => go(i)}
-                className={`relative w-[72px] h-[72px] shrink-0 rounded-md overflow-hidden bg-linen transition-opacity ${
-                  !openingPreview && slide === i ? 'ring-2 ring-primary' : 'ring-1 ring-line opacity-70 hover:opacity-100'
-                }`}
-                aria-label={`Show ${g.alt}`}
-              >
-                <Image src={g.src} alt="" fill sizes="72px" className="object-contain" />
-              </button>
-            ))}
           </div>
         </div>
 
         {/* Details + configurator */}
         <div className="min-w-0">
-          <h1 className="heading-display text-3xl md:text-[36px]">{PRODUCT.shortTitle}</h1>
-          <a href="#reviews" className="mt-4 inline-flex items-center gap-2.5 text-sm">
+          <h1 className="heading-display text-[28px] md:text-[34px]">{PRODUCT.shortTitle}</h1>
+          <a href="#reviews" className="mt-3 inline-flex items-center gap-2.5 text-sm">
             <Stars value={RATING.score} className="w-4 h-4" />
             <span className="text-muted">
               <span className="font-semibold text-foreground">{RATING.score} out of 5</span> on {RATING.source}
             </span>
           </a>
-          <ul className="mt-6 space-y-2.5">
+          {/* Price */}
+          <div className="mt-6">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <PriceTag price={displayed} size="lg" from={price === null} />
+              {price !== null && <span className="text-sm text-muted">You save {formatUSD(compareAt(displayed) - displayed)}</span>}
+            </div>
+            <p className="mt-2 text-[13px] text-muted">
+              {price !== null && w !== null && h !== null ? `Price for size band ${bandLabel(w, h)}. ` : 'Enter your size for an exact price. '}
+              Extra {PROMO.codePercent}% off with <span className="font-semibold text-foreground">{PROMO.code}</span> at checkout.
+            </p>
+          </div>
+
+          <ul className="mt-6 space-y-2">
             {PRODUCT_BULLETS.map((b) => (
               <li key={b} className="flex gap-2.5 text-[15px]">
                 <CheckDot /> {b}
@@ -290,19 +311,8 @@ export default function Configurator() {
             ))}
           </ul>
 
-          {/* Price card */}
-          <div className="mt-7 rounded-lg bg-linen p-5 md:p-6">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <PriceTag price={displayed} size="lg" from={price === null} />
-              {price !== null && (
-                <span className="text-sm font-medium text-primary">You save {formatUSD(compareAt(displayed) - displayed)}</span>
-              )}
-            </div>
-            <p className="mt-2 text-xs text-muted">
-              {price !== null && w !== null && h !== null ? `Price for size band ${bandLabel(w, h)}. ` : 'Enter your size for an exact price. '}
-              Extra {PROMO.codePercent}% off with <span className="font-semibold text-foreground">{PROMO.code}</span> at checkout.
-            </p>
-            <div className="mt-4 pt-4 border-t border-sand grid sm:grid-cols-2 gap-3 text-sm">
+          <div className="mt-6 py-4 border-y border-line">
+            <div className="grid grid-cols-2 gap-3 text-sm">
               <span className="flex items-center gap-2.5">
                 <Icon name="truck" className="w-5 h-5 text-primary" />
                 <span>
@@ -324,7 +334,7 @@ export default function Configurator() {
             <div ref={measureRef}>
               <Step
                 n={1}
-                title="Enter your window size"
+                title="Window size"
                 done={sizeValid}
                 aside={
                   <div className="inline-flex rounded-md border border-line p-0.5 text-xs">
@@ -351,10 +361,17 @@ export default function Configurator() {
                 <div className="mt-4">
                   <MeasureReassurance />
                 </div>
-                <p className="mt-6 text-sm font-medium">
-                  Name this blind <span className="font-normal text-muted">(optional, useful when ordering for several windows)</span>
-                </p>
-                <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setNaming((v) => !v)}
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-foreground/80 hover:text-foreground"
+                  aria-expanded={naming}
+                >
+                  <Icon name={naming ? 'minus' : 'plus'} className="w-4 h-4" />
+                  Add a room name <span className="font-normal text-muted">(optional)</span>
+                </button>
+                {naming && (
+                <div className="mt-3 grid grid-cols-2 gap-2.5">
                   <select
                     value={room}
                     onChange={(e) => setRoom(e.target.value)}
@@ -374,10 +391,11 @@ export default function Configurator() {
                     className="rounded-md border border-line px-4 py-3 text-sm outline-none transition-colors hover:border-foreground/30 focus:border-primary placeholder:text-foreground/35"
                   />
                 </div>
+                )}
               </Step>
             </div>
 
-            <Step n={2} title="Choose your colors" done>
+            <Step n={2} title="Colors" done>
               <p className="text-sm">
                 <span className="text-muted">Fabric:</span> <span className="font-semibold">{color.name}</span>
               </p>
@@ -394,12 +412,9 @@ export default function Configurator() {
                   <Swatch key={c.id} hex={c.hex} name={c.name} active={frame.id === c.id} onClick={() => setFrame(c)} />
                 ))}
               </div>
-              <button onClick={addSamples} className="mt-6 text-sm font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
-                Not sure? Order free fabric samples
-              </button>
             </Step>
 
-            <Step n={3} title="Pick an opening direction" done={!!opening} id="opening-direction">
+            <Step n={3} title="Opening direction" done={!!opening} id="opening-direction">
               {touched && !opening && <p className="-mt-2 mb-3 text-xs text-red-600">Please choose how you’d like the blind to open.</p>}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {OPENINGS.map((o) => (
@@ -410,7 +425,7 @@ export default function Configurator() {
                       setOpeningPreview(o.image);
                     }}
                     className={`rounded-md overflow-hidden text-left bg-white transition-shadow ${
-                      opening === o.id ? 'ring-2 ring-primary' : 'ring-1 ring-line hover:ring-foreground/30'
+                      opening === o.id ? 'ring-2 ring-foreground' : 'ring-1 ring-line hover:ring-foreground/30'
                     }`}
                     aria-pressed={opening === o.id}
                   >
@@ -418,7 +433,7 @@ export default function Configurator() {
                       <Image src={o.image} alt="" fill sizes="160px" className="object-cover" />
                     </span>
                     <span className="block px-3 py-2.5 text-xs">
-                      <span className={`block font-semibold ${opening === o.id ? 'text-primary' : ''}`}>{o.name}</span>
+                      <span className="block font-semibold">{o.name}</span>
                       <span className="block text-muted">{o.price ? `+${formatUSD(o.price)}` : 'Included'}</span>
                     </span>
                   </button>
@@ -483,15 +498,6 @@ export default function Configurator() {
                 <Link href="/how-to-measure#guarantee" className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
                   Details
                 </Link>
-              </span>
-            </li>
-            <li id="samples" className="flex items-start gap-3.5 py-4">
-              <Icon name="swatch" className="w-5 h-5 shrink-0 text-primary" />
-              <span>
-                <span className="font-semibold">Free fabric samples.</span> <span className="text-muted">Up to 10, delivered free. </span>
-                <button onClick={addSamples} className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
-                  Add to cart
-                </button>
               </span>
             </li>
             <li className="flex items-start gap-3.5 py-4">

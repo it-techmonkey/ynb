@@ -26,13 +26,13 @@ export default function Comparison({ ctaHref = '/shop' }: { ctaHref?: string }) 
         <SectionHeading center title={COMPARISON.title} sub={COMPARISON.body} />
 
         <Reveal className="mt-12 mx-auto max-w-4xl">
-          <div className="overflow-x-auto scrollbar-hide">
-            <table className="w-full min-w-[560px] border-collapse text-sm md:text-[15px]">
+          <div className="relative overflow-x-auto scrollbar-hide">
+            <table className="w-full border-collapse text-[13px] sm:text-sm md:text-[15px]">
               <thead>
                 <tr className="border-b border-foreground/15">
-                  <th className="w-[40%] py-4 text-left font-normal text-muted">Feature</th>
+                  <th className="w-[34%] sm:w-[40%] py-4 text-left font-normal text-muted">Feature</th>
                   {cols.map((c, i) => (
-                    <th key={c} scope="col" className={`px-3 py-4 text-center font-semibold ${i === 0 ? 'bg-primary-soft text-primary' : 'text-foreground/70'}`}>
+                    <th key={c} scope="col" className={`px-1.5 sm:px-3 py-4 text-center font-semibold leading-tight ${i === 0 ? 'bg-primary-soft text-primary' : 'text-foreground/70'}`}>
                       {c}
                     </th>
                   ))}
@@ -45,7 +45,7 @@ export default function Comparison({ ctaHref = '/shop' }: { ctaHref?: string }) 
                       {r.label}
                     </th>
                     {r.values.map((v, i) => (
-                      <td key={cols[i]} className={`py-4 px-3 ${i === 0 ? 'bg-primary-soft/60' : ''}`}>
+                      <td key={cols[i]} className={`py-4 px-1.5 sm:px-3 ${i === 0 ? 'bg-primary-soft/60' : ''}`}>
                         <span className="flex justify-center">
                           <Mark value={v} />
                         </span>

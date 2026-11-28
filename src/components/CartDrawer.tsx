@@ -8,7 +8,7 @@ import { PROMO } from '@/data/content';
 import { formatUSD } from '@/lib/pricing';
 
 export default function CartDrawer() {
-  const { items, open, setOpen, setQty, remove, subtotal, add, count } = useCart();
+  const { items, open, setOpen, setQty, remove, subtotal, count } = useCart();
   const [notice, setNotice] = useState(false);
 
   useEffect(() => {
@@ -16,8 +16,6 @@ export default function CartDrawer() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [setOpen]);
-
-  const hasSample = items.some((i) => i.kind === 'sample');
 
   return (
     <div className={`fixed inset-0 z-50 ${open ? '' : 'pointer-events-none'}`} aria-hidden={!open}>
@@ -56,21 +54,15 @@ export default function CartDrawer() {
               {items.map((item) => (
                 <li key={item.id} className="flex gap-4 pb-4 border-b border-line last:border-0">
                   <div className="w-20 h-20 shrink-0 rounded-md overflow-hidden bg-linen">
-                    {item.image ? (
+                    {item.image && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={item.image} alt="" className="w-full h-full object-contain" />
-                    ) : (
-                      <div className="w-full h-full grid grid-cols-2">
-                        {['#ffffff', '#E6E5DE', '#53565b', '#4A90D9'].map((c) => (
-                          <span key={c} style={{ background: c }} />
-                        ))}
-                      </div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between gap-3">
                       <p className="text-sm font-semibold leading-snug">{item.title}</p>
-                      <p className="text-sm font-semibold whitespace-nowrap tabular-nums">{item.unitPrice === 0 ? 'Free' : formatUSD(item.unitPrice * item.qty)}</p>
+                      <p className="text-sm font-semibold whitespace-nowrap tabular-nums">{formatUSD(item.unitPrice * item.qty)}</p>
                     </div>
                     <ul className="mt-1 text-xs text-muted leading-relaxed">
                       {item.details.map((d) => (
@@ -78,19 +70,15 @@ export default function CartDrawer() {
                       ))}
                     </ul>
                     <div className="mt-3 flex items-center justify-between">
-                      {item.kind === 'blind' ? (
-                        <div className="flex items-center rounded-md border border-line">
-                          <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty - 1)} aria-label="Decrease quantity">
-                            <Icon name="minus" className="w-3.5 h-3.5" />
-                          </button>
-                          <span className="w-6 text-center text-sm tabular-nums">{item.qty}</span>
-                          <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty + 1)} aria-label="Increase quantity">
-                            <Icon name="plus" className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <span />
-                      )}
+                      <div className="flex items-center rounded-md border border-line">
+                        <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty - 1)} aria-label="Decrease quantity">
+                          <Icon name="minus" className="w-3.5 h-3.5" />
+                        </button>
+                        <span className="w-6 text-center text-sm tabular-nums">{item.qty}</span>
+                        <button className="p-2 text-muted hover:text-foreground" onClick={() => setQty(item.id, item.qty + 1)} aria-label="Increase quantity">
+                          <Icon name="plus" className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                       <button onClick={() => remove(item.id)} className="text-xs text-muted underline underline-offset-2 hover:text-foreground">
                         Remove
                       </button>
@@ -99,22 +87,6 @@ export default function CartDrawer() {
                 </li>
               ))}
             </ul>
-          )}
-
-          {items.length > 0 && !hasSample && (
-            <div className="mt-2 rounded-md bg-linen p-4 flex items-center gap-3">
-              <Icon name="swatch" className="w-5 h-5 shrink-0 text-primary" />
-              <div className="flex-1">
-                <p className="text-sm font-semibold">Add free fabric samples</p>
-                <p className="text-xs text-muted">See every color at home, free of charge.</p>
-              </div>
-              <button
-                onClick={() => add({ kind: 'sample', title: 'Free Fabric Samples', details: ['White, Cream, Graphite, Blue'], unitPrice: 0 })}
-                className="rounded-md border border-primary px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
-              >
-                Add
-              </button>
-            </div>
           )}
         </div>
 

@@ -30,7 +30,7 @@ export const RATING = {
 export const HERO = {
   title: 'Total darkness, whenever you need it',
   body: 'Made-to-measure honeycomb blackout blinds that press-fit inside your window frame. No drilling, no gaps at the edges and no early-morning light.',
-  points: ['Free fabric samples', 'Fit Guarantee', '5-year warranty'],
+  points: ['Fit Guarantee', '5-year warranty', 'Cordless & child-safe'],
 };
 
 export const VALUE_PROPS: { icon: IconName; title: string; body: string }[] = [
@@ -162,7 +162,7 @@ export const MEASURE_TIPS = [
 export const GUARANTEES: { icon: IconName; title: string; body: string; href?: string }[] = [
   { icon: 'shield', title: 'Your Next Fit Guarantee™', body: 'Made a genuine measuring mistake? We’ll remake your blind to the corrected size.*', href: '/how-to-measure#guarantee' },
   { icon: 'badge', title: '5-year warranty', body: 'Every blind is covered against manufacturing defects on components and fabric.' },
-  { icon: 'swatch', title: 'Free fabric samples', body: 'See and feel the fabric at home first. Up to 10 samples, delivered free.', href: '/shop#samples' },
+  { icon: 'truck', title: 'Made to order', body: 'Made in 3–5 business days. Most orders arrive within 7–12 business days.', href: '/faq' },
   { icon: 'chat', title: 'Help from our US team', body: 'Questions about sizing or fitting? Our Texas-based team is happy to help.', href: '/faq' },
 ];
 
@@ -279,10 +279,6 @@ export const FAQS: Faq[] = [
   {
     q: 'Do I really not need to drill?',
     a: 'Correct. The frame clicks together by hand and press-fits inside your window recess, held by tension and seal foam. Optional screw holes are there if you ever want extra stability, but most windows don’t need them.',
-  },
-  {
-    q: 'Can I order free samples before buying?',
-    a: 'Yes. We send up to 10 fabric samples to your door, free of charge, so you can see and feel the colors before you order.',
   },
   {
     q: 'How long will delivery take?',

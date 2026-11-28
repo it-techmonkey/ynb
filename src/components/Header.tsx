@@ -23,8 +23,8 @@ function PromoBar() {
         <span>
           Extra {PROMO.codePercent}% off with code <span className="font-semibold text-white">{PROMO.code}</span>
         </span>
-        <Link href="/shop#samples" className="hidden lg:inline underline underline-offset-4 decoration-white/30 hover:decoration-white">
-          Order free samples
+        <Link href="/how-to-measure" className="hidden lg:inline underline underline-offset-4 decoration-white/30 hover:decoration-white">
+          How to measure
         </Link>
       </div>
     </div>

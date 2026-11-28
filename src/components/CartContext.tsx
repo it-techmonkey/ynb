@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 export interface CartItem {
   id: string;
-  kind: 'blind' | 'sample';
+  kind: 'blind';
   title: string;
   /** Human-readable configuration lines shown in the cart. */
   details: string[];
@@ -35,7 +35,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setItems(JSON.parse(raw));
+      if (raw) setItems((JSON.parse(raw) as CartItem[]).filter((i) => i.kind === 'blind'));
     } catch {
       /* ignore corrupt storage */
     }
@@ -51,10 +51,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [open]);
 
   const add = useCallback<CartState['add']>((item) => {
-    setItems((prev) => {
-      if (item.kind === 'sample' && prev.some((p) => p.kind === 'sample' && p.title === item.title)) return prev;
-      return [...prev, { ...item, qty: item.qty ?? 1, id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}` }];
-    });
+    setItems((prev) => [...prev, { ...item, qty: item.qty ?? 1, id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}` }]);
     setOpen(true);
   }, []);
 

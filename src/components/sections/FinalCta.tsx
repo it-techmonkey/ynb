@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import { ButtonLink, CheckDot, PriceTag, Reveal } from '../ui';
 import { FROM_PRICE } from '@/lib/pricing';
 
@@ -31,12 +30,6 @@ export default function FinalCta({ ctaHref = '/shop' }: { ctaHref?: string }) {
               How to Measure
             </ButtonLink>
           </div>
-          <p className="mt-5 text-sm text-muted">
-            Not ready yet?{' '}
-            <Link href="/shop#samples" className="font-semibold text-primary underline underline-offset-4 decoration-primary/30 hover:decoration-primary">
-              Order free fabric samples
-            </Link>
-          </p>
         </Reveal>
 
         <Reveal variant="fade" delay={100}>

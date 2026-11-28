@@ -16,7 +16,7 @@ export default function Install({ id = 'how-it-works', ctaHref = '/shop' }: { id
           </Reveal>
         </div>
 
-        <ol className="mt-12 -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-6 md:gap-y-12 overflow-x-auto md:overflow-visible snap-x snap-mandatory scrollbar-hide">
+        <ol className="mt-12 -mx-5 px-5 md:mx-0 md:px-0 flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-x-6 md:gap-y-12 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-5 md:scroll-px-0 scrollbar-hide">
           {HOW_IT_WORKS.map((s, i) => (
             <Reveal as="li" key={s.image} delay={(i % 3) * 80} className="shrink-0 w-[78%] sm:w-[46%] md:w-auto snap-start">
               <div className="relative aspect-[4/5] rounded-lg overflow-hidden bg-linen">

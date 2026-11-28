@@ -48,12 +48,12 @@ export default function Features({ ctaHref = '/shop' }: { ctaHref?: string }) {
           ))}
         </div>
 
-        <ul className="mt-16 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 md:mt-16 grid grid-cols-2 gap-x-5 md:gap-x-10 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
-            <Reveal as="li" key={f.title} delay={(i % 3) * 80} className="border-t border-line py-7">
+            <Reveal as="li" key={f.title} delay={(i % 3) * 80} className="border-t border-line py-5 md:py-7">
               <Icon name={f.icon} className="w-6 h-6 text-primary" />
-              <h3 className="mt-4 font-semibold">{f.title}</h3>
-              <p className="mt-1.5 text-[15px] leading-relaxed text-muted">{f.body}</p>
+              <h3 className="mt-3 md:mt-4 text-[15px] md:text-base font-semibold leading-snug">{f.title}</h3>
+              <p className="mt-1.5 text-[13px] md:text-[15px] leading-relaxed text-muted">{f.body}</p>
             </Reveal>
           ))}
         </ul>

@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <ValueBar />
+      <ValueBar tone="white" />
       <Problem />
       <Features />
       <UseCases />

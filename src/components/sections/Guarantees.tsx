@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Icon, Reveal } from '../ui';
 import { GUARANTEES } from '@/data/content';
 
-/** Risk-reversal row: guarantee, warranty, samples, support. */
+/** Risk-reversal row: guarantee, warranty, delivery, support. */
 export default function Guarantees() {
   return (
     <section className="bg-white border-y border-line py-16 md:py-20">

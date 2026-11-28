@@ -6,7 +6,7 @@ import { FAQS } from '@/data/content';
 
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions | Your Next Blinds',
-  description: 'Answers about fitting, measuring, delivery, samples and the Fit Guarantee for EclipseCore drill-free blackout blinds.',
+  description: 'Answers about fitting, measuring, delivery and the Fit Guarantee for EclipseCore drill-free blackout blinds.',
 };
 
 export default function FaqPage() {

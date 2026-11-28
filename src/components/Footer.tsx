@@ -7,7 +7,6 @@ const COLUMNS = [
     title: 'Shop',
     links: [
       { label: 'EclipseCore Blackout Blinds', href: '/shop' },
-      { label: 'Free Fabric Samples', href: '/shop#samples' },
       { label: 'Compare', href: '/#compare' },
       { label: 'Reviews', href: '/#reviews' },
     ],
